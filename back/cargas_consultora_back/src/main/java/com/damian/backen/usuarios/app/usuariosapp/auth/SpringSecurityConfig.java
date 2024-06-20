@@ -48,7 +48,7 @@ public class SpringSecurityConfig {
         .requestMatchers("/usuarios/**").hasRole("ADMIN")
 
                 .requestMatchers("/usuarios/**").hasRole("ADMIN")
-
+                .requestMatchers("/clientes/**").hasRole("ADMIN")
                 .anyRequest().authenticated()
 
                 .and()

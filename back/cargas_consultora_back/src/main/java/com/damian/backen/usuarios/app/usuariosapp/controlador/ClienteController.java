@@ -5,6 +5,7 @@ import com.damian.backen.usuarios.app.usuariosapp.service.ClienteService;
 import com.damian.backen.usuarios.app.usuariosapp.service.ClienteServiceImpl;
 import jakarta.validation.Valid;
 import org.apache.logging.log4j.util.Timer;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -18,6 +19,7 @@ import java.util.Optional;
 @CrossOrigin("*")
 @RequestMapping("/cliente")
 public class ClienteController {
+    @Autowired
     private ClienteService clienteService;
     private ResponseEntity<?>validar (BindingResult result){
         Map<String,Object> errores = new HashMap<>();
@@ -40,7 +42,7 @@ public class ClienteController {
     }
     @GetMapping("/numero/{nroCliente}")
     public ResponseEntity<?>findByNumeroCliente(@PathVariable Long nroCliente){
-        Optional<Cliente>clienteOptional = clienteService.findByNroCliente(nroCliente)
+        Optional<Cliente>clienteOptional = clienteService.findByNroCliente(nroCliente);
         if (clienteOptional.isPresent()){
             return ResponseEntity.ok(clienteOptional.get());
         }
