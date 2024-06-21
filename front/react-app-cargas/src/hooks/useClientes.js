@@ -57,7 +57,7 @@ export const useClientes =()=>{
             );
             handlerCloseForm();
             // cambiar
-            navigate('/users');
+            navigate('/clientes');
         } catch (error) {
             if (error.response && error.response.status == 400) {
                dispatch( onError(error.response.data));

@@ -1,0 +1,20 @@
+{
+  "items": [
+    {
+      "cliente":{
+        "id":2
+      }, // Este será llenado por la referencia inversa al cliente creado
+      "bultos": 6,
+      "kilos": 30.5
+    },
+    {
+      "cliente": {
+        "id":3
+      },  // Este será llenado por la referencia inversa al cliente creado
+      "bultos": 10,
+      "kilos": 50.0
+    }
+  ],
+  "totalBultos": 0,
+  "totalKilos": 0.0
+}

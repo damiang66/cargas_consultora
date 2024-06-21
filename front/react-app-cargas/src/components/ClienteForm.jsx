@@ -2,10 +2,11 @@ import React, { useEffect, useState } from 'react'
 import { useClientes } from '../hooks/useClientes';
 import { FloatLabel } from 'primereact/floatlabel';
 import { InputText } from 'primereact/inputtext';
+import { useParams } from 'react-router-dom';
  
 
 export const ClienteForm = ({ clienteSeleccionado, handlerCloseForm }) => {
-    const { inicialClienteForm, handlerAddCliente, errors } = useClientes();
+    const { inicialClienteForm, handlerAddCliente, errors,clientes } = useClientes();
 
     const [clienteForm, setClienteFrom] = useState(inicialClienteForm);
 
@@ -16,6 +17,15 @@ export const ClienteForm = ({ clienteSeleccionado, handlerCloseForm }) => {
             ...clienteSeleccionado
         });
     }, [clienteSeleccionado]);
+    const {id:paramId} = useParams();
+    useEffect(() => {
+        if (paramId) {
+            const cliente = clientes.find(e => e.id === parseInt(paramId));
+            if (cliente) {
+                setClienteFrom(cliente);
+            }
+        }
+    }, [paramId, clientes]);
 
     const onInputChange = ({ target }) => {
         // console.log(target.value)

@@ -3,25 +3,39 @@ import { useAuth } from '../auth/hooks/useAuth';
 import { useClientes } from '../hooks/useClientes';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
+
          
 
 export const ClienteList = () => {
-  const { clientes,getClientes } = useClientes();
+  const { clientes,getClientes,handlerRemoveClientes } = useClientes();
     const { login } = useAuth();
+    const navegar = useNavigate()
     useEffect(()=>{
 getClientes()
     },[])
     const editar = (rowData) => {
       return (
-          <button className="btn btn-primary" onClick={() => onEditCliente(rowData)}>
-              Editar
-          </button>
+          <NavLink className="btn btn-primary" to={`/clientes/editar/`+rowData.id}>
+             Editar
+          </NavLink>
       );
   };
-  const onEditCliente = (cliente)=>{
-    console.log(cliente)
+  const remove = (rowData)=>{
+    return(
+      <button className="btn btn-danger" onClick={() => handlerRemoveClientes(rowData.id)}>
+      Eliminar
+  </button>
+    )
   }
+  const onEditCliente = (cliente)=>{
+    navegar(`editar/${cliente.id}`)
+  }
+  const onRemoveCliente = (data)=>{
+    console.log(data?.id)
+  }
+   
+  
   return (
    <>
    <DataTable value={clientes} tableStyle={{ minWidth: '50rem' }}>
@@ -33,6 +47,7 @@ getClientes()
     <Column field="telefono" header="telefono"></Column>
     <Column field="email" header="email"></Column>
     <Column body={editar} header="Editar"></Column>
+    <Column body={remove} header="Eliminar"></Column>
 </DataTable>
    </>
   )

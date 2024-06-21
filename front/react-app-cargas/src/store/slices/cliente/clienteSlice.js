@@ -68,7 +68,7 @@ export const clienteSlice = createSlice({
         },
         onCloseForm:(state)=>{
             state.visibleForm=false;
-            state.userSelected=initialUserForm;
+            state.userSelected=inicialClienteForm;
         },
         onError:(state,action)=>{
           state.errors=action.payload  
