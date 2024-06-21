@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 
 import Swal from "sweetalert2";
 import { viajeFindAll, viajeRemove, viajeSave, viajeUpdate } from "../services/viajeService";
-import { addViaje, inicialViajeForm, loadingViajes, onCloseForm, onOpenForm, onViajesSelectedForm, removeViaje, updateViaje } from "../store/slices/viaje/viajeSlice";
+import { addViaje, inicialViajeForm, loadingViajes, onCloseForm, onError, onOpenForm, onViajesSelectedForm, removeViaje, updateViaje } from "../store/slices/viaje/viajeSlice";
 
 
 export const useViajes =()=>{
@@ -50,10 +50,10 @@ export const useViajes =()=>{
             
 
             Swal.fire(
-                (cliente.id === 0) ?
+                (viaje.id === 0) ?
                     'Viaje Creado' :
                     'Viaje Actualizado',
-                (cliente.id === 0) ?
+                (viaje.id === 0) ?
                     'El viaje ha sido creado con exito!' :
                     'El viaje ha sido actualizado con exito!',
                 'success'
@@ -121,7 +121,7 @@ export const useViajes =()=>{
 
     const handlerCloseForm = () => {
       dispatch(onCloseForm())
-      dispatch( onError({}));
+      dispatch(onError({}));
     }
     return {
         viajes,

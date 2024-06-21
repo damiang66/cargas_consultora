@@ -3,15 +3,19 @@ package com.damian.backen.usuarios.app.usuariosapp.service;
 import com.damian.backen.usuarios.app.usuariosapp.endidad.Viaje;
 import com.damian.backen.usuarios.app.usuariosapp.repositorio.ItemRepository;
 import com.damian.backen.usuarios.app.usuariosapp.repositorio.ViajeRepository;
+import jakarta.persistence.EntityManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 @Service
 public class ViajeServiceImpl implements  ViajeService{
     @Autowired
     private ViajeRepository viajeRepository;
+    @Autowired
+    private EntityManager entityManager;
     @Autowired
     private ItemRepository itemRepository;
     @Override
@@ -28,10 +32,13 @@ public class ViajeServiceImpl implements  ViajeService{
     public Viaje save(Viaje viaje) {
         if (viaje.getItems() != null) {
             viaje.getItems().forEach(item -> {
-                if (item.getId() == null) {
-                    // Guardar el item si no tiene un ID
-                    // Asumiendo que tienes un ItemRepository o un método para guardar el item
-                     itemRepository.save(item);
+                if (item.getId() != null) {
+                    // Si el item ya existe, hay que actualizarlo
+                  itemRepository.findAllById(Collections.singleton(item.getId()));
+                  itemRepository.save(item);
+                } else {
+                    // Si es un item nuevo, hay que persistirlo
+                itemRepository.save(item);
                 }
             });
         }

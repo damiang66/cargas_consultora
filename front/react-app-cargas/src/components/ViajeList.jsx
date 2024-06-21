@@ -17,7 +17,7 @@ getViajes()
     },[])
     const editar = (rowData) => {
       return (
-          <NavLink className="btn btn-primary" to={`/clientes/editar/`+rowData.id}>
+          <NavLink className="btn btn-primary" to={`/viajes/editar/`+rowData.id}>
              Editar
           </NavLink>
       );
@@ -35,11 +35,11 @@ getViajes()
   return (
    <>
    <DataTable value={viajes} tableStyle={{ minWidth: '50rem' }}>
-    <Column field="numeroViaje" header="numeroViaje"></Column>
+    <Column field="numeroViaje" header="Numero Viaje"></Column>
     <Column field="fecha" header="fecha"></Column>
     
     <Column field="totalBultos" header="Total Bultos"></Column>
-    <Column field="TotalKilos" header="Total kilos"></Column>
+    <Column field="totalKilos" header="Total kilos"></Column>
     <Column body={editar} header="Editar"></Column>
     <Column body={remove} header="Eliminar"></Column>
 </DataTable>

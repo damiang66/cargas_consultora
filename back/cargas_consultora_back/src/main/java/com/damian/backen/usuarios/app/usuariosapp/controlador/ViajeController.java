@@ -59,6 +59,7 @@ public class ViajeController {
         Viaje viajeDb = null;
         if (viajeOptional.isPresent()){
            viajeDb = viajeOptional.get();
+           viajeService.delete(viajeDb.getId());
            viajeDb.setNumeroViaje(viaje.getNumeroViaje());
            viajeDb.setFecha(viaje.getFecha());
            viajeDb.setItems(viaje.getItems());

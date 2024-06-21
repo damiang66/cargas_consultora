@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 export const inicialViajeForm = {
-        id:0,
+        id:undefined,
         numeroViaje:0,
         fecha:'',
         totalBultos:0,
