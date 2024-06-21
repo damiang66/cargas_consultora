@@ -3,6 +3,7 @@ package com.damian.backen.usuarios.app.usuariosapp.endidad;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -12,6 +13,9 @@ public class Viaje {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Temporal(TemporalType.DATE)
+    private Date fecha;
+    private Long numeroViaje;
     @ManyToMany(cascade = CascadeType.ALL)
     private List<Item> items;
     private Integer totalBultos;

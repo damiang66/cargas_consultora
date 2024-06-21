@@ -41,7 +41,7 @@ getClientes()
    <DataTable value={clientes} tableStyle={{ minWidth: '50rem' }}>
     <Column field="numeroCliente" header="numeroCliente"></Column>
     <Column field="nombre" header="nombre"></Column>
-    <Column field="direcion" header="direccion"></Column>
+    <Column field="direccion" header="direccion"></Column>
     <Column field="localidad" header="localidad"></Column>
     <Column field="provincia" header="provincia"></Column>
     <Column field="telefono" header="telefono"></Column>

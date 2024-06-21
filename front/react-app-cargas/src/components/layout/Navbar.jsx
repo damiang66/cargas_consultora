@@ -35,6 +35,13 @@ export const Navbar = () => {
                                 </NavLink>
                             </li>
                         }
+                          {!login.isAdmin ||
+                            <li className="nav-item">
+                                <NavLink className="nav-link" to="/viajes">
+                                   cargar Viajes
+                                </NavLink>
+                            </li>
+                        }
                         
                     </ul>
                 </div>

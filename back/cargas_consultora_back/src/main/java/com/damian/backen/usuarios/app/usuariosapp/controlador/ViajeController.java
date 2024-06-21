@@ -59,6 +59,8 @@ public class ViajeController {
         Viaje viajeDb = null;
         if (viajeOptional.isPresent()){
            viajeDb = viajeOptional.get();
+           viajeDb.setNumeroViaje(viaje.getNumeroViaje());
+           viajeDb.setFecha(viaje.getFecha());
            viajeDb.setItems(viaje.getItems());
            viajeDb.setTotalBultos(viaje.getTotalBultos());
            viajeDb.setTotalKilos(viaje.getTotalKilos());

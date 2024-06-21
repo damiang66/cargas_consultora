@@ -11,7 +11,7 @@ export const inicialClienteForm = {
 }
 const initialErrors = {
     numeroCliente: '',
-    npmbre: '',
+    nombre: '',
     direccion: '',
     localidad: "",
     provincia:"",
