@@ -11,6 +11,8 @@ import { useSelector } from "react-redux";
 import { usePrincipal } from '../hooks/usePrincipal';
 import { ViajePage } from '../pages/ViajePage';
 import {ViajeRegistrarPage} from '../pages/ViajeRegistrarPage'
+import { LiquidacionPage } from '../pages/LiquidacionPage';
+import { LiquidarionRegistrarPage } from '../pages/LiquidarionRegistrarPage';
 
 export const UserRoutes = () => {
   const { login } = useAuth();
@@ -34,6 +36,9 @@ export const UserRoutes = () => {
                 <Route path='viajes' element={<ViajePage />} />
                 <Route path="viajes/registrar" element={<ViajeRegistrarPage />} />
                 <Route path="viajes/editar/:id" element={<ViajeRegistrarPage />} />
+                <Route path='liquidaciones' element={<LiquidacionPage />} />
+                <Route path="liquidaciones/registrar" element={<LiquidarionRegistrarPage />} />
+                <Route path="liquidaciones/editar/:id" element={<LiquidarionRegistrarPage />} />
               </>
             )}
             <Route path="/" element={<Navigate to="/users" />} />
