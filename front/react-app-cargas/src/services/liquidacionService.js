@@ -52,3 +52,28 @@ export const liquidacionRemove = async(id)=>{
         throw error;
     }
 }
+export const viajeLiquidado = async()=>{
+    try {
+        const respuesta = await axios.get(`${BASE_URL}/liquidado`,config())
+        return respuesta;
+        
+    } catch (error) {
+        throw error;
+    }
+}
+export const liquidar = async(id)=>{
+    try {
+        const respuesta = await axios.put(`${BASE_URL}/liquidado/${id}`,config())
+        return respuesta;
+    } catch (error) {
+        throw error;
+    }
+}
+export const noLiquidar = async(id)=>{
+    try {
+        const respuesta = await axios.put(`${BASE_URL}/noLiquidado/${id}`,config())
+        return respuesta;
+    } catch (error) {
+        throw error;
+    }
+}

@@ -4,11 +4,11 @@ import { useNavigate } from "react-router-dom";
 
 import Swal from "sweetalert2";
 import { LiquidacionFindAll, liquidacionRemove, liquidacionSave, liquidacionUpdate } from "../services/liquidacionService";
-import { addLiquidacion, loadingliquidaciones, onCloseForm, onError, onLiquidacionSelectedForm, onOpenForm, removeLiquidacion, updateLiquidacion } from "../store/slices/liquidacion/liquidacionSlice";
-import { inicialClienteForm } from "../store/slices/cliente/clienteSlice";
+import { addLiquidacion, loadingliquidaciones, onCloseForm, onError, onLiquidacionSelectedForm, onOpenForm, removeLiquidacion, updateLiquidacion,inicialLiquidacionForm } from "../store/slices/liquidacion/liquidacionSlice";
+
 
 export const useLiquidacion =()=>{
-    const {liquidaciones,liquidacionSeleccionado,visibleForm,errors}= useSelector(state=>state.liquidacion)
+    const {liquidaciones,liquidacionSeleccionado,visibleForm,errors}= useSelector(state=>state.liquidaciones)
     const dispatch = useDispatch()
     const navigate = useNavigate();
 
@@ -26,6 +26,7 @@ export const useLiquidacion =()=>{
             
     }
 }
+
 
     const handlerAddLiquidacion = async (liquidacion) => {
         // console.log(user);
@@ -125,7 +126,7 @@ export const useLiquidacion =()=>{
     return {
         liquidaciones,
         liquidacionSeleccionado,
-        inicialClienteForm,
+        inicialLiquidacionForm,
         visibleForm,
         errors,
         handlerAddLiquidacion,
