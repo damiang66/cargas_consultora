@@ -20,6 +20,7 @@ public class Viaje {
     private List<Item> items;
     private Integer totalBultos;
     private Double totalKilos;
+    private Boolean liquidado = false;
     public void addItem(Item item){
         this.items.add(item);
     }

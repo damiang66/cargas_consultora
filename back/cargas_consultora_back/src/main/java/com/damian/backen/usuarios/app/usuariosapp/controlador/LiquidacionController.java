@@ -3,6 +3,7 @@ package com.damian.backen.usuarios.app.usuariosapp.controlador;
 import com.damian.backen.usuarios.app.usuariosapp.endidad.Liquidacion;
 import com.damian.backen.usuarios.app.usuariosapp.endidad.Viaje;
 import com.damian.backen.usuarios.app.usuariosapp.service.LiquidacionService;
+import com.damian.backen.usuarios.app.usuariosapp.service.ViajeService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,6 +20,8 @@ import java.util.Optional;
 public class LiquidacionController {
     @Autowired
     private LiquidacionService liquidacionService;
+    @Autowired
+    private ViajeService viajeService;
     @GetMapping
     public ResponseEntity<?>findAll(){
         return ResponseEntity.ok(liquidacionService.findAll());
@@ -56,5 +59,30 @@ public class LiquidacionController {
         }
         return ResponseEntity.notFound().build();
     }
-
+    @GetMapping("/liquidado")
+    public ResponseEntity<?>liquidado(){
+        return ResponseEntity.ok().body(viajeService.liquidado());
+    }
+    @PutMapping("/liquidado/{id}")
+    public ResponseEntity<?>liquidar(@PathVariable Long id){
+        Optional<Viaje> viajeOptional = viajeService.findById(id);
+        Viaje viaje= null;
+        if (viajeOptional.isPresent()){
+            viaje = viajeOptional.get();
+            viaje.setLiquidado(true);
+            return ResponseEntity.status(HttpStatus.CREATED).body(viajeService.save(viaje));
+        }
+        return ResponseEntity.notFound().build();
+    }
+    @PutMapping("/noLiquidado/{id}")
+    public ResponseEntity<?>liquidarNo(@PathVariable Long id){
+        Optional<Viaje> viajeOptional = viajeService.findById(id);
+        Viaje viaje= null;
+        if (viajeOptional.isPresent()){
+            viaje = viajeOptional.get();
+            viaje.setLiquidado(false);
+            return ResponseEntity.status(HttpStatus.CREATED).body(viajeService.save(viaje));
+        }
+        return ResponseEntity.notFound().build();
+    }
 }

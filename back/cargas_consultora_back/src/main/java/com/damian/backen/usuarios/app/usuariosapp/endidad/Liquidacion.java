@@ -21,5 +21,7 @@ public class Liquidacion {
     private List<Gasto> gastos;
     private Double TotalGastos;
     private Boolean pagado=false;
+    private Double iva;
+    private Double Total;
 
 }

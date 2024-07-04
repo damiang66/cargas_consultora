@@ -7,6 +7,7 @@ import java.util.Optional;
 
 public interface ViajeService {
     public List<Viaje>findAll();
+    public List<Viaje>liquidado();
     public Optional<Viaje>findById(Long id);
     public Viaje save(Viaje viaje);
     public void delete(Long id);

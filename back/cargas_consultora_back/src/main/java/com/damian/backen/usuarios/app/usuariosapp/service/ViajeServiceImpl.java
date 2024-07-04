@@ -24,6 +24,11 @@ public class ViajeServiceImpl implements  ViajeService{
     }
 
     @Override
+    public List<Viaje> liquidado() {
+        return viajeRepository.liquidado();
+    }
+
+    @Override
     public Optional<Viaje> findById(Long id) {
         return viajeRepository.findById(id);
     }
