@@ -37,7 +37,7 @@ export const useLiquidacion =()=>{
         try {
             console.log(liquidacion.id);
 
-            if (liquidacion.id === undefined) {
+            if (liquidacion.id === 0) {
                 console.log('entre en el if');
                 response = await liquidacionSave(liquidacion);
                 dispatch(addLiquidacion(response.data))
@@ -50,10 +50,10 @@ export const useLiquidacion =()=>{
             
 
             Swal.fire(
-                (cliente.id === 0) ?
+                (liquidacion.id === 0) ?
                     'Liquidacion Creada' :
                     'Liquidacion Actualizada',
-                (cliente.id === 0) ?
+                (liquidacion.id=== 0) ?
                     'La Liquidacion ha sido creada con exito!' :
                     'La Liquidacion ha sido actualizada con exito!',
                 'success'
