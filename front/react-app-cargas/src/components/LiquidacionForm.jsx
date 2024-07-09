@@ -105,18 +105,36 @@ export const LiquidacionForm = ({ liquidacionSeleccionada, handlerCloseForm }) =
     };
 
     const onSubmit = (event) => {
+
         event.preventDefault();
+      
+     if(id){
+       
+const liquidacionCompleta = {
+    ...liquidacionForm,
+    gastos: listaGasto,
+    totalGastos:totalGastos,
+    iva:iva,
+    total:total,
+}
+handlerAddLiquidacion(liquidacionCompleta);
+     }else{
         const liquidacionCompleta = {
             ...liquidacionForm,
             gastos: listaGasto,
             totalGastos:totalGastos,
             iva:iva,
             total:total,
-            viaje:viajeSeleccionado?.id,
+            viaje:viajeSeleccionado[0],
+          
 
         };
+        handlerAddLiquidacion(liquidacionCompleta);
         console.log(liquidacionCompleta);
-       handlerAddLiquidacion(liquidacionCompleta);
+     }
+
+       
+     
     };
 
     return (
@@ -125,7 +143,8 @@ export const LiquidacionForm = ({ liquidacionSeleccionada, handlerCloseForm }) =
             <div className="container m-4">
                 <form onSubmit={onSubmit}>
                     <div className="container m-2" style={{ display: 'flex', flexDirection: 'column' }}>
-                        <MultiSelect
+                        {id?"":<>
+                            <MultiSelect
                             value={viajeSeleccionado}
                             onChange={(e) => setViajeSeleccionado(e.value)}
                             options={viaje}
@@ -137,6 +156,8 @@ export const LiquidacionForm = ({ liquidacionSeleccionada, handlerCloseForm }) =
 
                         <label htmlFor="">Fecha</label>
                         <Calendar className='form' value={fecha} onChange={(e) => onInputChange({ target: { name: 'fecha', value: e.value } })} />
+                        </>}
+                       
                         <div className='m-2'>
                             <FloatLabel>
                                 <InputText id="concepto" value={concepto} onChange={changeGasto} name='concepto' />

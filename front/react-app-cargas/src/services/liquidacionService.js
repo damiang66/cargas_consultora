@@ -28,13 +28,16 @@ export const liquidacionFindById = async(id)=>{
 }
 export const liquidacionSave = async (liquidacion)=>{
     try {
+        console.log(liquidacion);
         const respuesta = await axios.post(BASE_URL,liquidacion,config())
+       
         return respuesta;
     } catch (error) {
         throw error;
     }
 }
 export const liquidacionUpdate = async (liquidacion)=>{
+    console.log("DESDE EL SERVICE " + JSON.stringify(liquidacion));
     try {
         const respuesta = await axios.put(`${BASE_URL}/${liquidacion.id}`,liquidacion,config());
         return respuesta;

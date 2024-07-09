@@ -34,7 +34,7 @@ console.log(liquidaciones);
   return (
    <>
    <DataTable  value={liquidaciones} tableStyle={{ minWidth: '50rem' }}>
-    <Column field="viaje" header="Numero Viaje"></Column>
+    <Column field="viaje.numeroViaje" header="Numero Viaje"></Column>
     <Column field="fecha" header="fecha"></Column>
     
     <Column field="total" header="Total Gastos"></Column>

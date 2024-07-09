@@ -41,6 +41,8 @@ public class LiquidacionController {
     }
     @PostMapping
     public ResponseEntity<?>save(@RequestBody Liquidacion liquidacion){
+        System.out.println("LIQUIDACION"+liquidacion);
+
         return ResponseEntity.status(HttpStatus.CREATED).body(liquidacionService.save(liquidacion));
     }
     @PutMapping("/{id}")

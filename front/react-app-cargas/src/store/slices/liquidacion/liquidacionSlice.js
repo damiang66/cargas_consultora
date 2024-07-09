@@ -66,7 +66,7 @@ export const liquidacionSlice = createSlice({
         },
         onCloseForm:(state)=>{
             state.visibleForm=false;
-            state.userSelected=inicialClienteForm;
+            state.userSelected=inicialLiquidacionForm;
         },
         onError:(state,action)=>{
           state.errors=action.payload  
