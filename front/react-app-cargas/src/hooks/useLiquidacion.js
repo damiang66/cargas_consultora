@@ -3,7 +3,7 @@ import { useAuth } from "../auth/hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 
 import Swal from "sweetalert2";
-import { LiquidacionFindAll, liquidacionRemove, liquidacionSave, liquidacionUpdate } from "../services/liquidacionService";
+import { LiquidacionFindAll, liquidacionRemove, liquidacionSave, liquidacionUpdate, liquidar } from "../services/liquidacionService";
 import { addLiquidacion, loadingliquidaciones, onCloseForm, onError, onLiquidacionSelectedForm, onOpenForm, removeLiquidacion, updateLiquidacion,inicialLiquidacionForm } from "../store/slices/liquidacion/liquidacionSlice";
 
 
@@ -21,6 +21,7 @@ export const useLiquidacion =()=>{
         const result = await LiquidacionFindAll();
         console.log(result);
         dispatch(loadingliquidaciones(result.data));
+       
           
      } catch (error) {
             
@@ -47,7 +48,7 @@ export const useLiquidacion =()=>{
                 dispatch(updateLiquidacion(response.data))
             }
 
-            
+       
 
             Swal.fire(
                 (liquidacion.id === 0) ?
@@ -58,8 +59,10 @@ export const useLiquidacion =()=>{
                     'La Liquidacion ha sido actualizada con exito!',
                 'success'
             );
-            handlerCloseForm();
+           // handlerCloseForm();
             // cambiar
+            console.log(liquidacion);
+            const respuesta = await liquidar(liquidacion.viaje.id)
             navigate('/liquidaciones');
         } catch (error) {
             if (error.response && error.response.status == 400) {

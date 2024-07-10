@@ -41,7 +41,7 @@ public class LiquidacionController {
     }
     @PostMapping
     public ResponseEntity<?>save(@RequestBody Liquidacion liquidacion){
-        System.out.println("LIQUIDACION"+liquidacion);
+        liquidacion.getViaje().setLiquidado(false);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(liquidacionService.save(liquidacion));
     }
@@ -57,6 +57,10 @@ public class LiquidacionController {
             liquidaciondb.setViaje(liquidacion.getViaje());
             liquidaciondb.setTotalGastos(liquidacion.getTotalGastos());
             liquidaciondb.setPagado(liquidacion.getPagado());
+            liquidaciondb.setTotalGastos(liquidacion.getTotalGastos());
+            liquidaciondb.setIva(liquidacion.getIva());
+            liquidaciondb.setTotal(liquidacion.getTotal());
+            liquidaciondb.getViaje().setLiquidado(false);
             return ResponseEntity.status(HttpStatus.CREATED).body(liquidacionService.save(liquidaciondb));
         }
         return ResponseEntity.notFound().build();
@@ -71,7 +75,7 @@ public class LiquidacionController {
         Viaje viaje= null;
         if (viajeOptional.isPresent()){
             viaje = viajeOptional.get();
-            viaje.setLiquidado(true);
+            viaje.setLiquidado(false);
             return ResponseEntity.status(HttpStatus.CREATED).body(viajeService.save(viaje));
         }
         return ResponseEntity.notFound().build();
