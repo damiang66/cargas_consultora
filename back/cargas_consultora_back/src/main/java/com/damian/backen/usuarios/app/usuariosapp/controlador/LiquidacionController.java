@@ -86,7 +86,7 @@ public class LiquidacionController {
         Viaje viaje= null;
         if (viajeOptional.isPresent()){
             viaje = viajeOptional.get();
-            viaje.setLiquidado(false);
+            viaje.setLiquidado(true);
             return ResponseEntity.status(HttpStatus.CREATED).body(viajeService.save(viaje));
         }
         return ResponseEntity.notFound().build();

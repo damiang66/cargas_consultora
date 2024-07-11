@@ -23,12 +23,19 @@ console.log(liquidaciones);
   };
   const remove = (rowData)=>{
     return(
-      <button className="btn btn-danger" onClick={() => handlerRemoveLiquidacion(rowData.id)}>
+      <button className="btn btn-danger" onClick={() => handlerRemoveLiquidacion(rowData.id,rowData?.viaje?.id)}>
       Eliminar
   </button>
     )
   }
- 
+  const imprimir =(rowData)=>{
+    return(
+      <button className="btn btn-success" onClick={() =>console.log("Imprimir") }>
+      Imprimir
+  </button>
+    )
+  
+   }
    
   
   return (
@@ -41,6 +48,7 @@ console.log(liquidaciones);
     <Column field="pagado" header="Pagado"></Column>
     <Column body={editar} header="Editar"></Column>
     <Column body={remove} header="Eliminar"></Column>
+    <Column body={imprimir} header="Imprimir"></Column>
 </DataTable>
    </>
   )

@@ -28,8 +28,16 @@ getViajes()
       Eliminar
   </button>
     )
+    
   }
- 
+ const imprimir =(rowData)=>{
+  return(
+    <button className="btn btn-success" onClick={() =>console.log("Imprimir") }>
+    Imprimir
+</button>
+  )
+
+ }
    
   
   return (
@@ -42,6 +50,7 @@ getViajes()
     <Column field="totalKilos" header="Total kilos"></Column>
     <Column body={editar} header="Editar"></Column>
     <Column body={remove} header="Eliminar"></Column>
+    <Column body={imprimir} header="Imprimir"></Column>
 </DataTable>
    </>
   )

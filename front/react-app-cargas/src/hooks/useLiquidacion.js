@@ -3,7 +3,7 @@ import { useAuth } from "../auth/hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 
 import Swal from "sweetalert2";
-import { LiquidacionFindAll, liquidacionRemove, liquidacionSave, liquidacionUpdate, liquidar } from "../services/liquidacionService";
+import { LiquidacionFindAll, liquidacionRemove, liquidacionSave, liquidacionUpdate, liquidar, noLiquidar } from "../services/liquidacionService";
 import { addLiquidacion, loadingliquidaciones, onCloseForm, onError, onLiquidacionSelectedForm, onOpenForm, removeLiquidacion, updateLiquidacion,inicialLiquidacionForm } from "../store/slices/liquidacion/liquidacionSlice";
 
 
@@ -78,7 +78,7 @@ export const useLiquidacion =()=>{
         }
     }
 
-    const handlerRemoveLiquidacion = (id) => {
+    const handlerRemoveLiquidacion = (id,idViaje) => {
         // console.log(id);
 
         if (!login.isAdmin) return;
@@ -97,6 +97,7 @@ export const useLiquidacion =()=>{
                 try {
                     await liquidacionRemove(id);
                     dispatch(removeLiquidacion(id));
+                    const response = await noLiquidar(idViaje);
                     Swal.fire(
                         'Liquidacion Eliminada!',
                         'La liquidacion ha sido eliminada con exito!',

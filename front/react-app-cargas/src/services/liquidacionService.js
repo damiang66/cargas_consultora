@@ -66,14 +66,18 @@ export const viajeLiquidado = async()=>{
 }
 export const liquidar = async(id)=>{
     try {
+        console.log("ANTES DE LIQUIDAR");
         const respuesta = await axios.put(`${BASE_URL}/liquidado/${id}`,config())
         return respuesta;
     } catch (error) {
+        console.log(error);
         throw error;
+        
     }
 }
 export const noLiquidar = async(id)=>{
     try {
+        console.log('NO LIQUIDAR');
         const respuesta = await axios.put(`${BASE_URL}/noLiquidado/${id}`,config())
         return respuesta;
     } catch (error) {
