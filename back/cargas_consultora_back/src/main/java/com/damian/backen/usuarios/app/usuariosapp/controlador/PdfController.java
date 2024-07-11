@@ -1,4 +1,5 @@
 package com.damian.backen.usuarios.app.usuariosapp.controlador;
+import com.damian.backen.usuarios.app.usuariosapp.endidad.Item;
 import com.damian.backen.usuarios.app.usuariosapp.endidad.Viaje;
 import com.damian.backen.usuarios.app.usuariosapp.service.ViajeService;
 import com.itextpdf.io.image.ImageData;
@@ -47,22 +48,44 @@ private ViajeService viajeService;
         ImageData imageData = ImageDataFactory.create(inputStream.readAllBytes());
         Image image = new Image(imageData);
         document.add(image);
+        document.add(new Paragraph("-------------------------------------------------------------------------------------------------------------------------------------------")
+                .setTextAlignment(TextAlignment.JUSTIFIED)
+                .setFixedPosition(0, 600, 1000));
         document.add(new Paragraph("VIAJE NRO ")
                 .setTextAlignment(TextAlignment.LEFT)
-                .setFixedPosition(100, 100, 100));
+                .setFixedPosition(0, 570, 100));
+        document.add(new Paragraph(viaje.getNumeroViaje().toString())
+                .setTextAlignment(TextAlignment.LEFT)
+                .setFixedPosition(75, 570, 100));
+
         // Agregar una tabla
-        float[] columnWidths = {1, 5}; // Anchos de las columnas
+        float[] columnWidths = {4, 4, 4}; // Ajusta los anchos de las columnas
         Table table = new Table(columnWidths);
 
         // Encabezados de la tabla
-        table.addCell(new Cell().add(new Paragraph("ID")));
-        table.addCell(new Cell().add(new Paragraph("Nombre")));
+        table.addCell(new Cell().add(new Paragraph("CLIENTE").setTextAlignment(TextAlignment.CENTER)));
+        table.addCell(new Cell().add(new Paragraph("BULTOS").setTextAlignment(TextAlignment.CENTER)));
+        table.addCell(new Cell().add(new Paragraph("KILOS").setTextAlignment(TextAlignment.CENTER)));
+
+        int totalBultos = 0;
+        double totalKilos = 0.0;
 
         // Datos de la tabla
-        table.addCell(new Cell().add(new Paragraph("1")));
-        table.addCell(new Cell().add(new Paragraph("John Doe")));
-        table.addCell(new Cell().add(new Paragraph("2")));
-        table.addCell(new Cell().add(new Paragraph("Jane Doe")));
+        for (Item item : viaje.getItems()) {
+            table.addCell(new Cell().add(new Paragraph(item.getCliente().getNumeroCliente().toString()).setTextAlignment(TextAlignment.CENTER)));
+            table.addCell(new Cell().add(new Paragraph(String.valueOf(item.getBultos())).setTextAlignment(TextAlignment.CENTER)));
+            table.addCell(new Cell().add(new Paragraph(String.valueOf(item.getKilos())).setTextAlignment(TextAlignment.CENTER)));
+
+            // Sumar los totales
+            totalBultos += item.getBultos();
+            totalKilos += item.getKilos();
+        }
+
+        // Fila de totales
+        table.addCell(new Cell(1, 1).add(new Paragraph("TOTAL").setTextAlignment(TextAlignment.CENTER).setBold()));
+        table.addCell(new Cell(1, 1).add(new Paragraph(String.valueOf(totalBultos)).setTextAlignment(TextAlignment.CENTER).setBold()));
+        table.addCell(new Cell(1, 1).add(new Paragraph(String.valueOf(totalKilos)).setTextAlignment(TextAlignment.CENTER).setBold()));
+
 
         document.add(table);
         document.close();
