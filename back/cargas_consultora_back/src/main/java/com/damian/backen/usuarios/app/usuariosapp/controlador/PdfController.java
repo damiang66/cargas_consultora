@@ -4,6 +4,7 @@ import com.damian.backen.usuarios.app.usuariosapp.endidad.Viaje;
 import com.damian.backen.usuarios.app.usuariosapp.service.ViajeService;
 import com.itextpdf.io.image.ImageData;
 import com.itextpdf.io.image.ImageDataFactory;
+import com.itextpdf.kernel.font.PdfFontFactory;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.layout.Document;
@@ -22,6 +23,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import javax.swing.text.Element;
+import java.awt.*;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -51,12 +54,15 @@ private ViajeService viajeService;
         document.add(new Paragraph("-------------------------------------------------------------------------------------------------------------------------------------------")
                 .setTextAlignment(TextAlignment.JUSTIFIED)
                 .setFixedPosition(0, 600, 1000));
+        document.add(new Paragraph("DETALLE DEL VIAJE ")
+                .setTextAlignment(TextAlignment.CENTER).setBold()
+                .setFixedPosition(0, 570, 200));
         document.add(new Paragraph("VIAJE NRO ")
                 .setTextAlignment(TextAlignment.LEFT)
-                .setFixedPosition(0, 570, 100));
+                .setFixedPosition(0, 540, 100));
         document.add(new Paragraph(viaje.getNumeroViaje().toString())
                 .setTextAlignment(TextAlignment.LEFT)
-                .setFixedPosition(75, 570, 100));
+                .setFixedPosition(75, 540, 100));
 
         // Agregar una tabla
         float[] columnWidths = {4, 4, 4}; // Ajusta los anchos de las columnas
