@@ -20,7 +20,7 @@ public class Viaje {
     private List<Item> items;
     private Integer totalBultos;
     private Double totalKilos;
-    private Boolean liquidado = false;
+    private Boolean liquidado = true;
     public void addItem(Item item){
         this.items.add(item);
     }
@@ -29,5 +29,9 @@ public class Viaje {
             this.totalBultos +=i.getBultos();
             this.totalKilos += i.getKilos();
         });
+    }
+    @PrePersist
+    public void liquidado(){
+        this.liquidado=true;
     }
 }

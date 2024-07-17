@@ -5,6 +5,8 @@ import { NavLink, useNavigate } from 'react-router-dom';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { liquidacionSave } from '../services/liquidacionService';
+import { pdfLiquidaciones } from '../services/PdfService';
+import { ExcelLiquidaciones } from '../services/excelPdf';
 
 export const LiquidacionList = () => {
     const { liquidaciones,getLiquidaciones,handlerRemoveLiquidacion } = useLiquidacion();
@@ -30,11 +32,34 @@ console.log(liquidaciones);
   }
   const imprimir =(rowData)=>{
     return(
-      <button className="btn btn-success" onClick={() =>console.log("Imprimir") }>
+      <button className="btn btn-success" onClick={() =>pdfLiquidaciones(rowData.id) }>
       Imprimir
   </button>
     )
   
+   }
+   const excel = (rowData)=>{
+    return(
+      <button className="btn btn-success" onClick={() =>excelImprimir(rowData.id) }>
+      Excel
+  </button>
+    )
+   }
+   const pdfImprimir = async (id)=>{
+    try {
+      const respuesta = await pdfLiquidaciones(id);
+      return respuesta;
+    } catch (error) {
+      console.log(error);
+    }
+   }
+   const excelImprimir = async(id)=>{
+    try {
+      const respuesta = await ExcelLiquidaciones(id);
+      return respuesta;
+    } catch (error) {
+      console.log(error);
+    }
    }
    
   
@@ -49,6 +74,7 @@ console.log(liquidaciones);
     <Column body={editar} header="Editar"></Column>
     <Column body={remove} header="Eliminar"></Column>
     <Column body={imprimir} header="Imprimir"></Column>
+    <Column body={excel} header="Exportar"></Column>
 </DataTable>
    </>
   )
