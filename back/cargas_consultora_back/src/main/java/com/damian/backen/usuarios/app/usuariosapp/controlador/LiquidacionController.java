@@ -6,12 +6,15 @@ import com.damian.backen.usuarios.app.usuariosapp.service.LiquidacionService;
 import com.damian.backen.usuarios.app.usuariosapp.service.ViajeService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -90,5 +93,11 @@ public class LiquidacionController {
             return ResponseEntity.status(HttpStatus.CREATED).body(viajeService.save(viaje));
         }
         return ResponseEntity.notFound().build();
+    }
+    @GetMapping("/buscar")
+    public List<Liquidacion> searchByDate(
+            @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date startDate,
+            @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date endDate) {
+        return liquidacionService.buscarPorFecha(startDate, endDate);
     }
 }

@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 @Service
@@ -53,5 +54,10 @@ public class ViajeServiceImpl implements  ViajeService{
     @Override
     public void delete(Long id) {
 viajeRepository.deleteById(id);
+    }
+
+    @Override
+    public List<Viaje> buscarPorFecha(Date inicio, Date fin) {
+        return viajeRepository.findByFechaBetween(inicio,fin);
     }
 }

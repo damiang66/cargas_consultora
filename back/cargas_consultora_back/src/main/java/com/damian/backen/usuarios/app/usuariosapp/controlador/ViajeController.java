@@ -4,14 +4,13 @@ import com.damian.backen.usuarios.app.usuariosapp.endidad.Viaje;
 import com.damian.backen.usuarios.app.usuariosapp.service.ViajeService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @RestController
 @CrossOrigin("*")
@@ -68,6 +67,13 @@ public class ViajeController {
            return ResponseEntity.status(HttpStatus.CREATED).body(viajeService.save(viajeDb));
         }
         return ResponseEntity.notFound().build();
+    }
+    // Método para buscar entre fechas
+    @GetMapping("/buscar")
+    public List<Viaje> searchByDate(
+            @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date startDate,
+            @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date endDate) {
+        return viajeService.buscarPorFecha(startDate, endDate);
     }
     }
 
