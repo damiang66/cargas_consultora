@@ -6,8 +6,8 @@ import { Column } from 'primereact/column';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { Paginator } from 'primereact/paginator';
 
-export const ClienteList = () => {
-  const { clientes, getClientes, handlerRemoveClientes } = useClientes();
+export const ClienteList = ({clientes}) => {
+  const {  getClientes, handlerRemoveClientes } = useClientes();
   const { login } = useAuth();
   const navegar = useNavigate();
 
@@ -17,7 +17,7 @@ export const ClienteList = () => {
 
   useEffect(() => {
     // Cargar clientes inicialmente
-    getClientes();
+    //getClientes();
   }, []);
 
   // Obtener los clientes para la página actual

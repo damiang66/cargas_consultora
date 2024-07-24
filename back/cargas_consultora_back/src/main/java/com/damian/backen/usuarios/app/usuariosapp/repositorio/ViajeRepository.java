@@ -14,5 +14,5 @@ public interface ViajeRepository extends JpaRepository<Viaje,Long> {
     @Query("select v from Viaje v where liquidado=true ")
     public List<Viaje> liquidado();
     List<Viaje> findByFechaBetween(Date startDate, Date endDate);
-    public List<Viaje> findNumeroViaje(Long numeroViaje);
+    public List<Viaje> findByNumeroViaje(Long numeroViaje);
 }

@@ -63,6 +63,6 @@ viajeRepository.deleteById(id);
 
     @Override
     public List<Viaje> buscarPorNumero(Long numero) {
-        return viajeRepository.findNumeroViaje(numero);
+        return viajeRepository.findByNumeroViaje(numero);
     }
 }

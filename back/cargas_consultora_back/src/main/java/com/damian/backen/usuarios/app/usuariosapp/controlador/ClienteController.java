@@ -42,11 +42,7 @@ public class ClienteController {
     }
     @GetMapping("/numero/{nroCliente}")
     public ResponseEntity<?>findByNumeroCliente(@PathVariable Long nroCliente){
-        Optional<Cliente>clienteOptional = clienteService.findByNroCliente(nroCliente);
-        if (clienteOptional.isPresent()){
-            return ResponseEntity.ok(clienteOptional.get());
-        }
-        return  ResponseEntity.notFound().build();
+     return ResponseEntity.ok(clienteService.findByNroCliente(nroCliente));
     }
     @PostMapping
     public ResponseEntity<?>save (@Valid @RequestBody Cliente cliente, BindingResult result){

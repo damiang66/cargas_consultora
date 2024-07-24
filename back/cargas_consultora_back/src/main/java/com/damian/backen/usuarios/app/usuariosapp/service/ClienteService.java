@@ -9,6 +9,6 @@ public interface ClienteService {
     public List<Cliente> findAll();
     public Optional<Cliente>findById(Long id);
     public Cliente save (Cliente cliente);
-    public Optional<Cliente>findByNroCliente(Long nroCliente);
+    public List<Cliente>findByNroCliente(Long nroCliente);
     public void delete(Long id);
 }

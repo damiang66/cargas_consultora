@@ -52,3 +52,12 @@ export const clienteRemove = async(id)=>{
         throw error;
     }
 }
+export const ClienteBuscar = async(nroCliente)=>{
+    try {
+        nroCliente = parseInt(nroCliente);
+        const respuesta = await axios.get(`${BASE_URL}/numero/${nroCliente}`,config());
+        return respuesta;
+    } catch (error) {
+        throw error;
+    }
+}
