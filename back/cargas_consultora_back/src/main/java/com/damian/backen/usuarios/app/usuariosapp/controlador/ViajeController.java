@@ -75,6 +75,11 @@ public class ViajeController {
             @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date endDate) {
         return viajeService.buscarPorFecha(startDate, endDate);
     }
+    @GetMapping("/buscarPorNumero/{numero}")
+    public ResponseEntity<?> buscar(@PathVariable Long numero){
+        return ResponseEntity.ok(viajeService.buscarPorNumero(numero));
+    }
+
     }
 
 

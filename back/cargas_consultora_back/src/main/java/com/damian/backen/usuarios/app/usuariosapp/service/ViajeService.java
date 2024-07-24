@@ -14,4 +14,5 @@ public interface ViajeService {
     public Viaje save(Viaje viaje);
     public void delete(Long id);
     public List<Viaje>buscarPorFecha(Date inicio, Date fin);
+    public List<Viaje>buscarPorNumero(Long numero);
 }

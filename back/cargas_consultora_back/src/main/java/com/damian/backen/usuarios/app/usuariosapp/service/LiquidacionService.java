@@ -12,4 +12,5 @@ public interface LiquidacionService {
     public Liquidacion save(Liquidacion liquidacion);
     public void delete(Long id);
     public List<Liquidacion>buscarPorFecha(Date inicio, Date fin);
+    public List<Liquidacion>buscarPorNumeroViaje(Long numero);
 }

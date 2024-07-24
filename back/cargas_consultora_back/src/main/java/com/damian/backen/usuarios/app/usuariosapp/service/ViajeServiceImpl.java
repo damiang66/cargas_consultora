@@ -60,4 +60,9 @@ viajeRepository.deleteById(id);
     public List<Viaje> buscarPorFecha(Date inicio, Date fin) {
         return viajeRepository.findByFechaBetween(inicio,fin);
     }
+
+    @Override
+    public List<Viaje> buscarPorNumero(Long numero) {
+        return viajeRepository.findNumeroViaje(numero);
+    }
 }

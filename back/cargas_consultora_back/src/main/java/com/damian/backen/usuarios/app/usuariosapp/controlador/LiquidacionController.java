@@ -100,4 +100,8 @@ public class LiquidacionController {
             @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date endDate) {
         return liquidacionService.buscarPorFecha(startDate, endDate);
     }
+    @GetMapping("/buscar/{numero}")
+    public ResponseEntity<?>buscar (@PathVariable Long numero){
+        return  ResponseEntity.ok().body(liquidacionService.buscarPorNumeroViaje(numero));
+    }
 }

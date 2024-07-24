@@ -8,4 +8,5 @@ import java.util.List;
 
 public interface LiquidacionRepositorio extends JpaRepository<Liquidacion,Long> {
     List<Liquidacion> findByFechaBetween(Date startDate, Date endDate);
+    List<Liquidacion> findByViajeNumeroViaje(Long numeroViaje);
 }

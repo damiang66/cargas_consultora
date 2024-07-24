@@ -53,4 +53,9 @@ public class LiquidacionServiceImp implements LiquidacionService{
     public List<Liquidacion> buscarPorFecha(Date inicio, Date fin) {
         return liquidacionRepositorio.findByFechaBetween(inicio,fin);
     }
+
+    @Override
+    public List<Liquidacion> buscarPorNumeroViaje(Long numero) {
+        return liquidacionRepositorio.findByViajeNumeroViaje(numero);
+    }
 }
