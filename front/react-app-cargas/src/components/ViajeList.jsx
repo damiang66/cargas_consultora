@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useAuth } from '../auth/hooks/useAuth';
 import { useClientes } from '../hooks/useClientes';
 import { DataTable } from 'primereact/datatable';
@@ -10,13 +10,22 @@ import { ExcelViajes } from '../services/excelPdf';
 
          
 
-export const ViajeList = () => {
+export const ViajeList = ({lista}) => {
   const { viajes,getViajes,handlerRemoveViaje } = useViajes();
     const { login } = useAuth();
     const navegar = useNavigate()
+    const [buscador,setBuscardor]=useState([])
     useEffect(()=>{
 getViajes()
     },[])
+    useEffect(()=>{
+      if (lista.length === 0) {
+        setBuscardor(viajes)
+        console.log('Lista actualizada con liquidaciones');
+    }else{
+      setBuscardor(lista)
+    }
+    },[lista,viajes])
     const editar = (rowData) => {
       return (
           <NavLink className="btn btn-primary" to={`/viajes/editar/`+rowData.id}>
@@ -67,7 +76,7 @@ getViajes()
   
   return (
    <>
-   <DataTable value={viajes} tableStyle={{ minWidth: '50rem' }}>
+   <DataTable value={buscador} tableStyle={{ minWidth: '50rem' }}>
     <Column field="numeroViaje" header="Numero Viaje"></Column>
     <Column field="fecha" header="fecha"></Column>
     

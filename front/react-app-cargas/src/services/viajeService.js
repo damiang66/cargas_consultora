@@ -52,3 +52,11 @@ export const viajeRemove = async(id)=>{
         throw error;
     }
 }
+export const viajeBuscar = async(numero)=>{
+    try {
+        const respuesta = await axios.get(`${BASE_URL}/buscarPorNumero/${numero}`)
+        return respuesta;
+    } catch (error) {
+        throw error;
+    }
+}

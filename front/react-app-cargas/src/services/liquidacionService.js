@@ -84,3 +84,11 @@ export const noLiquidar = async(id)=>{
         throw error;
     }
 }
+export const liquidacionBuscar = async(numero)=>{
+    try {
+        const respuesta = await axios.get(`${BASE_URL}/buscar/${numero}`);
+        return respuesta;
+    } catch (error) {
+        throw error;
+    }
+}
