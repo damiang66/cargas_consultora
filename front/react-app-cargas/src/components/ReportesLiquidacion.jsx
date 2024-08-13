@@ -80,6 +80,9 @@ export const ReportesLiquidacion = () => {
                     </div>
                 )}
             </div>
+
+            <button className='btn btn-primary m-2'>Exportar Excel</button>
+            <button className='btn btn-primary m-2'>Exportar Pdf</button>
         </div>
     );
 };
