@@ -45,6 +45,9 @@ export const UserRoutes = () => {
                 <Route path="reportes" element={<Reportes />} />
                 <Route path="reportesLiquidacion" element={<ReportesLiquidacion />} />
                 <Route path="reportesViaje" element={<ReporteViajes />} />
+                <Route path="fleteros" element={<ClientePage />} />
+                <Route path="fleteros/registrar" element={<ClienteForm />} />
+                <Route path="flereros/editar/:id" element={<ClienteForm />} />
 
               </>
             )}

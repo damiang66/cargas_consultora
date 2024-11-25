@@ -15,7 +15,7 @@ export const ViajeForm = ({ viajeSeleccionado, handlerCloseForm }) => {
     const [viajeForm, setViajeFrom] = useState(inicialViajeForm);
     const [itemsViaje, setItemsViaje] = useState([]);
 
-    const { id, numeroViaje, fecha, totalBultos, totalKilos } = viajeForm;
+    const { id, numeroViaje, fecha, totalBultos, totalKilos ,diferenciaKilos} = viajeForm;
 
     useEffect(() => {
         setViajeFrom({
@@ -150,6 +150,8 @@ export const ViajeForm = ({ viajeSeleccionado, handlerCloseForm }) => {
                         <InputText disabled value={totalBultos} />
                         <label htmlFor="">Total Kilos</label>
                         <InputText disabled value={totalKilos} />
+                        <label  htmlFor="">Diferecia kilos</label>
+                        <InputText name='diferenciaKilos'  onChange={onInputChange} value={diferenciaKilos} />
 
                         <button style={{ marginTop: '20px', display: 'flex', gap: '10px' }}
                             className="btn btn-primary"

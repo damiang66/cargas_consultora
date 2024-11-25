@@ -19,6 +19,7 @@ public class Viaje {
     @ManyToMany(cascade = CascadeType.ALL)
     private List<Item> items;
     private Integer totalBultos;
+    private Double diferenciaKilos;
     private Double totalKilos;
     private Boolean liquidado = true;
     public void addItem(Item item){
@@ -29,9 +30,11 @@ public class Viaje {
             this.totalBultos +=i.getBultos();
             this.totalKilos += i.getKilos();
         });
+        this.totalKilos = this.totalKilos + diferenciaKilos;
     }
     @PrePersist
     public void liquidado(){
         this.liquidado=true;
     }
+
 }

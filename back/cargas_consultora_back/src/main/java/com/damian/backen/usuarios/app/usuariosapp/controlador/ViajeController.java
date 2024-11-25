@@ -44,6 +44,8 @@ public class ViajeController {
     }
     @PostMapping
     public ResponseEntity<?>save (@Valid @RequestBody  Viaje viaje,BindingResult result){
+        System.out.println(viaje);
+
         viaje.setTotalKilos(0.0);
         viaje.setTotalBultos(0);
         if(result.hasErrors()){
@@ -64,6 +66,8 @@ public class ViajeController {
            viajeDb.setItems(viaje.getItems());
            viajeDb.setTotalBultos(viaje.getTotalBultos());
            viajeDb.setTotalKilos(viaje.getTotalKilos());
+           viajeDb.setDiferenciaKilos(viajeDb.getDiferenciaKilos());
+           viajeDb.setTotalKilos(viaje.getTotalKilos()+ viaje.getDiferenciaKilos());
            return ResponseEntity.status(HttpStatus.CREATED).body(viajeService.save(viajeDb));
         }
         return ResponseEntity.notFound().build();
