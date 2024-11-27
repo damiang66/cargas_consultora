@@ -64,6 +64,7 @@ public class RepartoController {
             repartoDb.setFecha(reparto.getFecha());
             repartoDb.setPagado(reparto.getPagado());
             repartoDb.setViaje(reparto.getViaje());
+            repartoDb.setPrecio(reparto.getPrecio());
             return ResponseEntity.status(HttpStatus.CREATED).body(repartoDb);
 
         }
@@ -96,4 +97,18 @@ public class RepartoController {
         }
         return ResponseEntity.notFound().build();
     }
+    @GetMapping("/reparto-viaje/{id}")
+    public ResponseEntity<?>repartoViaje(@PathVariable Long id){
+        List<Reparto> repartos = new ArrayList<>();
+        List<Reparto>repartosViaje = new ArrayList<>();
+        repartos = repartoService.findAll();
+        repartos.forEach(r->{
+            if(r.getViaje().getNumeroViaje() == id){
+                repartosViaje.add(r);
+            }
+        });
+        return ResponseEntity.ok(repartosViaje);
+    }
+
 }
+

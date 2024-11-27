@@ -18,6 +18,8 @@ import { ReportesLiquidacion } from '../components/ReportesLiquidacion';
 import { ReporteViajes } from '../components/ReporteViajes';
 import { FleterosPage } from '../pages/FleterosPage';
 import { FleterosForm } from '../components/FleterosForm';
+import { RepartoPage } from '../pages/RepartoPage';
+import { RepartoForm } from '../components/RepartoForm';
 
 export const UserRoutes = () => {
   const { login } = useAuth();
@@ -50,6 +52,9 @@ export const UserRoutes = () => {
                 <Route path="fleteros" element={<FleterosPage />} />
                 <Route path="fleteros/registrar" element={<FleterosForm />} />
                 <Route path="fleteros/editar/:id" element={<FleterosForm />} />
+                <Route path="repartos" element={<RepartoPage />} />
+                <Route path="repartos/registrar" element={<RepartoForm />} />
+                <Route path="repartos/editar/:id" element={<RepartoForm />} />
 
               </>
             )}

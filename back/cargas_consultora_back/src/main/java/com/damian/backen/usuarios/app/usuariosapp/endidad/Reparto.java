@@ -24,6 +24,8 @@ public class Reparto {
     private Boolean pagado;
     @Temporal(TemporalType.DATE)
     private Date fecha;
+    private Double precio;
+
 
 
 }
