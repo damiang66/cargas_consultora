@@ -63,7 +63,7 @@ public class FleteroControlador {
             fleterosDb.setNombre(fleteros.getNombre());
             fleterosDb.setPrecioPorDia(fleteros.getPrecioPorDia());
             fleterosDb.setPrecioPorKilometros(fleteros.getPrecioPorKilometros());
-            
+
             return ResponseEntity.status(HttpStatus.CREATED).body(fleteroService.saveFleteros(fleterosDb));
         }
         return ResponseEntity.notFound().build();

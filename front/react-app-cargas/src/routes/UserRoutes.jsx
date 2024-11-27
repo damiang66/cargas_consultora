@@ -16,6 +16,8 @@ import { LiquidarionRegistrarPage } from '../pages/LiquidarionRegistrarPage';
 import { Reportes } from '../components/layout/Reportes';
 import { ReportesLiquidacion } from '../components/ReportesLiquidacion';
 import { ReporteViajes } from '../components/ReporteViajes';
+import { FleterosPage } from '../pages/FleterosPage';
+import { FleterosForm } from '../components/FleterosForm';
 
 export const UserRoutes = () => {
   const { login } = useAuth();
@@ -45,9 +47,9 @@ export const UserRoutes = () => {
                 <Route path="reportes" element={<Reportes />} />
                 <Route path="reportesLiquidacion" element={<ReportesLiquidacion />} />
                 <Route path="reportesViaje" element={<ReporteViajes />} />
-                <Route path="fleteros" element={<ClientePage />} />
-                <Route path="fleteros/registrar" element={<ClienteForm />} />
-                <Route path="flereros/editar/:id" element={<ClienteForm />} />
+                <Route path="fleteros" element={<FleterosPage />} />
+                <Route path="fleteros/registrar" element={<FleterosForm />} />
+                <Route path="fleteros/editar/:id" element={<FleterosForm />} />
 
               </>
             )}
