@@ -1,92 +1,157 @@
-import React, { useEffect, useState } from 'react'
-import { useAuth } from '../auth/hooks/useAuth';
-import { useClientes } from '../hooks/useClientes';
+import React, { useEffect, useState } from 'react';
+import { useViajes } from '../hooks/useViajes';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
-import { NavLink, useNavigate } from 'react-router-dom';
-import { useViajes } from '../hooks/useViajes';
-import { pdfViajes } from '../services/PdfService';
-import { ExcelViajes } from '../services/excelPdf';
+import { NavLink } from 'react-router-dom';
+import { Calendar } from 'primereact/calendar';
+import Swal from 'sweetalert2';
+import { viajeExport } from '../services/viajeService';
 
-         
+export const ViajeList = ({ lista }) => {
+  const { viajes, getViajes, handlerRemoveViaje } = useViajes();
+  const [buscador, setBuscador] = useState([]);
+  const [fechaInicio, setFechaInicio] = useState(null);
+  const [fechaFin, setFechaFin] = useState(null);
 
-export const ViajeList = ({lista}) => {
-  const { viajes,getViajes,handlerRemoveViaje } = useViajes();
-    const { login } = useAuth();
-    const navegar = useNavigate()
-    const [buscador,setBuscardor]=useState([])
-    useEffect(()=>{
-getViajes()
-    },[])
-    useEffect(()=>{
-      if (lista.length === 0) {
-        setBuscardor(viajes)
-        console.log('Lista actualizada con liquidaciones');
-    }else{
-      setBuscardor(lista)
+  useEffect(() => {
+    getViajes();
+  }, []);
+
+  useEffect(() => {
+    if (lista.length === 0) {
+      setBuscador(viajes);
+    } else {
+      setBuscador(lista);
     }
-    },[lista,viajes])
-    const editar = (rowData) => {
-      return (
-          <NavLink className="btn btn-primary" to={`/viajes/editar/`+rowData.id}>
-             Editar
-          </NavLink>
-      );
-  };
-  const remove = (rowData)=>{
-    return(
-      <button className="btn btn-danger" onClick={() => handlerRemoveViaje(rowData.id)}>
-      Eliminar
-  </button>
-    )
-    
-  }
- const imprimir =(rowData)=>{
-  return(
-    <button className="btn btn-success" onClick={() =>pdfImprimir(rowData.id) }>
-    Imprimir
-</button>
-  )
+  }, [lista, viajes]);
 
- }
- const excel = (rowData)=>{
-  return(
-    <button className="btn btn-success" onClick={() =>excelImprimir(rowData.id) }>
-    Excel
-</button>
-  )
- }
- const pdfImprimir = async (id)=>{
-  try {
-    const respuesta = await pdfViajes(id);
-    return respuesta;
-  } catch (error) {
-    console.log(error);
-  }
- }
- const excelImprimir = async(id)=>{
-  try {
-    const respuesta = await ExcelViajes(id);
-    return respuesta;
-  } catch (error) {
-    console.log(error);
-  }
- }
-   
-  
+  useEffect(() => {
+    if (fechaInicio && fechaFin) {
+      const filteredViajes = viajes.filter(viaje => {
+        const fecha = new Date(viaje.fecha);
+        return fecha >= new Date(fechaInicio) && fecha <= new Date(fechaFin);
+      });
+      setBuscador(filteredViajes);
+    }
+  }, [fechaInicio, fechaFin, viajes]);
+
+  const editar = (rowData) => {
+    return (
+      <NavLink className="btn btn-primary" to={`/viajes/editar/` + rowData.id}>
+        Editar
+      </NavLink>
+    );
+  };
+
+  const remove = (rowData) => {
+    return (
+      <button className="btn btn-danger" onClick={() => handlerRemoveViaje(rowData.id)}>
+        Eliminar
+      </button>
+    );
+  };
+
+  const imprimir = (rowData) => {
+    return (
+      <button className="btn btn-success" onClick={() => pdfImprimir(rowData.id)}>
+        Imprimir
+      </button>
+    );
+  };
+
+  const excel = (rowData) => {
+    return (
+      <button className="btn btn-success" onClick={() => excelImprimir(rowData.id)}>
+        Excel
+      </button>
+    );
+  };
+
+  const pdfImprimir = async (id) => {
+    try {
+      const respuesta = await pdfViajes(id);
+      return respuesta;
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const excelImprimir = async (id) => {
+    try {
+      const respuesta = await ExcelViajes(id);
+      return respuesta;
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  // Función para enviar los datos filtrados al backend como JSON
+  const enviarDatosAlBackend = async () => {
+    // Filtrar los datos visibles en la tabla (buscador contiene los viajes filtrados)
+    const datosFiltrados = buscador.map(viaje => ({
+      fecha: viaje.fecha,                          // Fecha del viaje
+      numeroViaje: viaje.numeroViaje,              // Número de viaje
+      items: viaje.items.map(item => ({
+        cliente:item.cliente,
+        bultos: item.bultos,                       // Bultos del item
+        kilos: item.kilos                          // Kilos del item
+      })), 
+      totalBultos: viaje.totalBultos,              // Total de bultos
+      diferenciaKilos: viaje.diferenciaKilos || 0,  // Diferencia de kilos (si está disponible)
+      totalKilos: viaje.totalKilos,                // Total de kilos
+      liquidado: viaje.liquidado                   // Estado de liquidación
+    }));
+
+    const data = {
+      viajes: datosFiltrados,  // Solo los datos visibles en la tabla
+     // fechaInicio,
+    //  fechaFin
+    };
+    try {
+      const respuesta = await viajeExport(data);
+      Swal.fire('Exportación exitosa', 'Los archivos se han exportado correctamente', 'success');
+    } catch (error) {
+      console.error('Error exporting files:', error);
+      Swal.fire('Error en la exportación', 'Hubo un problema al exportar los archivos', 'error');
+    }
+  };
+
   return (
-   <>
-   <DataTable value={buscador} tableStyle={{ minWidth: '50rem' }}>
-    <Column field="numeroViaje" header="Numero Viaje"></Column>
-    <Column field="fecha" header="fecha"></Column>
-    
-    <Column field="totalBultos" header="Total Bultos"></Column>
-    <Column field="totalKilos" header="Total kilos"></Column>
-    <Column body={editar} header="Editar"></Column>
-    <Column body={remove} header="Eliminar"></Column>
-    <Column body={imprimir} header="Imprimir"></Column>
-    <Column body={excel} header="Exportar"></Column>
-</DataTable>
-   </>
-  )
-}
+    <>
+      <div className="p-inputgroup" style={{ marginBottom: '1em' }}>
+        <span className="p-inputgroup-addon">Filtrar por Fecha Inicio</span>
+        <Calendar
+          value={fechaInicio}
+          onChange={(e) => setFechaInicio(e.value)}
+          dateFormat="dd/mm/yy"
+          placeholder="Fecha Inicio"
+        />
+      </div>
+      <div className="p-inputgroup" style={{ marginBottom: '1em' }}>
+        <span className="p-inputgroup-addon">Filtrar por Fecha Fin</span>
+        <Calendar
+          value={fechaFin}
+          onChange={(e) => setFechaFin(e.value)}
+          dateFormat="dd/mm/yy"
+          placeholder="Fecha Fin"
+        />
+      </div>
+
+      <DataTable value={buscador} tableStyle={{ minWidth: '50rem' }}>
+        <Column field="numeroViaje" header="Numero Viaje"></Column>
+        <Column field="fecha" header="Fecha"></Column>
+        <Column field="totalBultos" header="Total Bultos"></Column>
+        <Column field="totalKilos" header="Total Kilos"></Column>
+        <Column body={editar} header="Editar"></Column>
+        <Column body={remove} header="Eliminar"></Column>
+        <Column body={imprimir} header="Imprimir"></Column>
+        <Column body={excel} header="Exportar"></Column>
+      </DataTable>
+
+      {/* Botón para enviar los datos filtrados al backend */}
+      <button className="btn btn-primary" onClick={enviarDatosAlBackend}>
+        Imprimir
+      </button>
+    </>
+  );
+};

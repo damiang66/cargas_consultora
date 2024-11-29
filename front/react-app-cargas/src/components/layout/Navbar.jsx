@@ -66,7 +66,7 @@ export const Navbar = () => {
                          {!login.isAdmin ||
                             <li className="nav-item">
                                 <NavLink className="nav-link" to="/repartos">
-                                  Repartos
+                                  Gastos
                                 </NavLink>
                             </li>
                         }

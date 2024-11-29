@@ -54,7 +54,7 @@ export const RepartoPage = () => {
     return (
         <>
             <div className="container m-4">
-                <h2>Sección Reparto</h2>
+                <h2>Sección Gastos</h2>
                 <FloatLabel className="m-4">
                     <InputText id="numero" value={numero} onChange={(e) => setNumero(e.target.value)} />
                     <label htmlFor="numero">Buscar</label>
