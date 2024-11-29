@@ -1,8 +1,6 @@
 package com.damian.backen.usuarios.app.usuariosapp.controlador;
 
-import com.damian.backen.usuarios.app.usuariosapp.endidad.Cliente;
-import com.damian.backen.usuarios.app.usuariosapp.endidad.Reparto;
-import com.damian.backen.usuarios.app.usuariosapp.endidad.Viaje;
+import com.damian.backen.usuarios.app.usuariosapp.endidad.*;
 import com.damian.backen.usuarios.app.usuariosapp.service.RepartoService;
 import com.damian.backen.usuarios.app.usuariosapp.service.ViajeService;
 import jakarta.validation.Valid;
@@ -46,10 +44,11 @@ public class RepartoController {
     }
     @PostMapping
     public ResponseEntity<?>save(@Valid @RequestBody Reparto reparto,BindingResult result){
+        System.out.println(reparto);
         if (result.hasErrors()){
             return validar(result);
         }
-        return ResponseEntity.status(HttpStatus.CREATED).body(reparto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(repartoService.save(reparto));
     }
     @PutMapping("/{id}")
     public ResponseEntity<?>update(@Valid @RequestBody Reparto reparto,BindingResult result,@PathVariable Long id){
@@ -57,15 +56,15 @@ public class RepartoController {
         if(optionalReparto.isPresent()){
             Reparto repartoDb = null;
             repartoDb = optionalReparto.get();
-            repartoDb.setClientes(reparto.getClientes());
+            repartoDb.setItems(reparto.getItems());
             repartoDb.setDescripcion(reparto.getDescripcion());
-            repartoDb.setEstado(reparto.getEstado());
+         //   repartoDb.setEstado(reparto.getEstado());
             repartoDb.setFleteros(reparto.getFleteros());
             repartoDb.setFecha(reparto.getFecha());
             repartoDb.setPagado(reparto.getPagado());
             repartoDb.setViaje(reparto.getViaje());
             repartoDb.setPrecio(reparto.getPrecio());
-            return ResponseEntity.status(HttpStatus.CREATED).body(repartoDb);
+            return ResponseEntity.status(HttpStatus.CREATED).body(repartoService.save(repartoDb));
 
         }
         return  ResponseEntity.notFound().build();
@@ -85,15 +84,13 @@ public class RepartoController {
     @GetMapping("/clientes-viajes/{id}")
         public ResponseEntity<?>clientesViajes(@PathVariable Long id){
           Optional<Viaje>optionalViaje = viajeService.findById(id);
-        List<Cliente>clientes = new ArrayList<>();
+        List<Item>items = new ArrayList<>();
           if (optionalViaje.isPresent()){
               Viaje viaje = optionalViaje.get();
 
 
-             viaje.getItems().forEach(c->{
-                  clientes.add(c.getCliente());
-              });
-              return ResponseEntity.ok(clientes);
+             items = viaje.getItems();
+              return ResponseEntity.ok(items);
         }
         return ResponseEntity.notFound().build();
     }
@@ -108,6 +105,15 @@ public class RepartoController {
             }
         });
         return ResponseEntity.ok(repartosViaje);
+    }
+    @PostMapping("/pdf")
+    public ResponseEntity<String> receiveRepartos(@RequestBody RepartoDto repartoDTO) {
+        // Lógica para manejar los datos recibidos
+        System.out.println("Datos recibidos: " + repartoDTO);
+
+        // Por ejemplo, podrías guardarlos en la base de datos aquí
+
+        return ResponseEntity.ok("Datos recibidos con éxito");
     }
 
 }

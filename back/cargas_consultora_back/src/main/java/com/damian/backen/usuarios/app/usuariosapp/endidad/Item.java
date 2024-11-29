@@ -13,4 +13,5 @@ public class Item {
     private Cliente cliente;
     private Integer bultos;
     private Double kilos;
+    private String estado = "Pendiente";
 }

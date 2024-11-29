@@ -1,6 +1,8 @@
 package com.damian.backen.usuarios.app.usuariosapp.controlador;
 
+import com.damian.backen.usuarios.app.usuariosapp.endidad.Item;
 import com.damian.backen.usuarios.app.usuariosapp.endidad.Viaje;
+import com.damian.backen.usuarios.app.usuariosapp.repositorio.ItemRepository;
 import com.damian.backen.usuarios.app.usuariosapp.service.ViajeService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +20,8 @@ import java.util.*;
 public class ViajeController {
     @Autowired
     private ViajeService viajeService;
+    @Autowired
+    private ItemRepository itemRepository;
     private ResponseEntity<?>validar(BindingResult result){
         Map<String,Object>errores = new HashMap<>();
         result.getFieldErrors().forEach(e->{
@@ -82,6 +86,21 @@ public class ViajeController {
     @GetMapping("/buscarPorNumero/{numero}")
     public ResponseEntity<?> buscar(@PathVariable Long numero){
         return ResponseEntity.ok(viajeService.buscarPorNumero(numero));
+    }
+    @PutMapping("/estado/{id}")
+    public ResponseEntity<?>editarEstadoItem(@PathVariable Long id){
+        Optional<Item>optionalItem = itemRepository.findById(id);
+        Item item = null;
+        if (optionalItem.isPresent()){
+            item = optionalItem.get();
+            if (item.getEstado().equals("Pendiente")){
+                item.setEstado("Entregado");
+            }else{
+                item.setEstado("Pendiente");
+            }
+            return ResponseEntity.ok(item);
+        }
+     return ResponseEntity.notFound().build();
     }
 
     }

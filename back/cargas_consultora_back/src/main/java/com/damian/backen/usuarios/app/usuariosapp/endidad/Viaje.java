@@ -1,5 +1,7 @@
 package com.damian.backen.usuarios.app.usuariosapp.endidad;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -32,6 +34,7 @@ public class Viaje {
         });
         this.totalKilos = this.totalKilos + diferenciaKilos;
     }
+
     @PrePersist
     public void liquidado(){
         this.liquidado=true;

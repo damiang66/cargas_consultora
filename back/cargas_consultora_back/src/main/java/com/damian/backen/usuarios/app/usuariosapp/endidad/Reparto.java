@@ -1,5 +1,6 @@
 package com.damian.backen.usuarios.app.usuariosapp.endidad;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -14,12 +15,15 @@ public class Reparto {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String descripcion;
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+    @JsonIgnoreProperties({"hibernateLazyInitializer","handler"})
     private Viaje viaje;
-    @ManyToMany(cascade = CascadeType.ALL)
-    private List<Cliente> clientes;
-    private String estado;
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToMany(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+    @JsonIgnoreProperties({"hibernateLazyInitializer","handler"})
+    private List<Item> items;
+    //private String estado;
+    @ManyToOne(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+    @JsonIgnoreProperties({"hibernateLazyInitializer","handler"})
     private Fleteros fleteros;
     private Boolean pagado;
     @Temporal(TemporalType.DATE)
