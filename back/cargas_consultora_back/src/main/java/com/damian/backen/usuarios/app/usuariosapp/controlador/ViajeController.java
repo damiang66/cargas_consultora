@@ -1,8 +1,10 @@
 package com.damian.backen.usuarios.app.usuariosapp.controlador;
 
 import com.damian.backen.usuarios.app.usuariosapp.endidad.Item;
+import com.damian.backen.usuarios.app.usuariosapp.endidad.Reparto;
 import com.damian.backen.usuarios.app.usuariosapp.endidad.Viaje;
 import com.damian.backen.usuarios.app.usuariosapp.repositorio.ItemRepository;
+import com.damian.backen.usuarios.app.usuariosapp.service.RepartoService;
 import com.damian.backen.usuarios.app.usuariosapp.service.ViajeService;
 
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -27,6 +29,7 @@ import org.springframework.web.bind.annotation.*;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.*;
+
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -40,6 +43,8 @@ public class ViajeController {
 
     @Autowired
     private ItemRepository itemRepository;
+    @Autowired
+    private RepartoService repartoService;
 
     // Validar errores
     private ResponseEntity<?> validar(BindingResult result) {
@@ -179,7 +184,7 @@ public class ViajeController {
 
             for (Item item : viaje.getItems()) {
                 if (item.getCliente() != null) {
-                    document.add(new Paragraph("Cliente: " + item.getCliente().getNombre()));
+                    document.add(new Paragraph("Cliente: " + item.getCliente().getNumeroCliente()));
                 }
             }
 
@@ -213,9 +218,9 @@ public class ViajeController {
                 row.createCell(2).setCellValue(viaje.getTotalBultos());
                 row.createCell(3).setCellValue(viaje.getTotalKilos());
 
-                // Incluir el nombre del cliente de cada item
+                // Incluir el numero del cliente de cada item
                 if (item.getCliente() != null) {
-                    row.createCell(4).setCellValue(item.getCliente().getNombre());
+                    row.createCell(4).setCellValue(item.getCliente().getNumeroCliente());
                 }
             }
         }
@@ -226,4 +231,21 @@ public class ViajeController {
 
         return baos.toByteArray();
     }
+    @PutMapping("/terminado/{id}")
+    public ResponseEntity<?>terminado (@RequestBody Viaje viaje1, @PathVariable Long id){
+        Optional<Viaje>optionalViaje = viajeService.findById(id);
+        Viaje viaje = null;
+        if(optionalViaje.isPresent()){
+            viaje = optionalViaje.get();
+            if(viaje1.getTerminado()){
+                viaje.setTerminado(false);
+            }else {
+                viaje.setTerminado(true);
+            }
+            return ResponseEntity.ok(viaje);
+
+        }
+        return ResponseEntity.notFound().build();
+    }
+
 }

@@ -24,9 +24,11 @@ public class Viaje {
     private Double diferenciaKilos;
     private Double totalKilos;
     private Boolean liquidado = true;
+    private Boolean terminado = false;
     public void addItem(Item item){
         this.items.add(item);
     }
+
     public void totales(){
         items.forEach(i->{
             this.totalBultos +=i.getBultos();

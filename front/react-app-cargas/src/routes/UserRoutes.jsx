@@ -20,6 +20,7 @@ import { FleterosPage } from '../pages/FleterosPage';
 import { FleterosForm } from '../components/FleterosForm';
 import { RepartoPage } from '../pages/RepartoPage';
 import { RepartoForm } from '../components/RepartoForm';
+import { SeguimientoPage } from '../pages/SeguimientoPage';
 
 export const UserRoutes = () => {
   const { login } = useAuth();
@@ -55,7 +56,8 @@ export const UserRoutes = () => {
                 <Route path="repartos" element={<RepartoPage />} />
                 <Route path="repartos/registrar" element={<RepartoForm />} />
                 <Route path="repartos/editar/:id" element={<RepartoForm />} />
-
+                <Route path="seguimiento" element={<SeguimientoPage />} />
+                <Route path="seguimiento/ver/:id" element={<RepartoForm />} />
               </>
             )}
             <Route path="/" element={<Navigate to="/users" />} />
