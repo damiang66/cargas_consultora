@@ -14,6 +14,7 @@ public class Compra {
     private Long id;
     @Temporal(TemporalType.DATE)
     private Date fecha;
+    private String tipo;
     private String cuit;
     private String nombre;
     private String nroFactura;

@@ -13,6 +13,7 @@ public class Venta {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String cuit;
+    private String tipo;
     @Temporal(TemporalType.DATE)
     private Date fecha;
     private String nombre;

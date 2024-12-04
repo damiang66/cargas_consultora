@@ -1,0 +1,13 @@
+/* src/styles/FacturacionPage.css */
+.facturacion-page {
+    text-align: center;
+    padding: 20px;
+  }
+  
+  .options-container {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+  

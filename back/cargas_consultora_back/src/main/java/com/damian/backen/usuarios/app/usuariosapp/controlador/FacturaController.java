@@ -70,6 +70,7 @@ public class FacturaController {
             compraDb.setFecha(compra.getFecha());
             compraDb.setOtro(compra.getOtro());
             compraDb.setTotal(compra.getTotal());
+            compraDb.setTipo(compra.getTipo());
             compraDb.setNroFactura(compra.getNroFactura());
             compraDb.setSubTotal(compraDb.getSubTotal());
             return ResponseEntity.ok(compraService.save(compraDb));
@@ -126,6 +127,7 @@ public class FacturaController {
             compraDb.setOtro(compra.getOtro());
             compraDb.setTotal(compra.getTotal());
             compraDb.setNroFactura(compra.getNroFactura());
+            compraDb.setTipo(compra.getTipo());
             compraDb.setSubTotal(compraDb.getSubTotal());
             return ResponseEntity.ok(ventaService.save(compraDb));
         }
