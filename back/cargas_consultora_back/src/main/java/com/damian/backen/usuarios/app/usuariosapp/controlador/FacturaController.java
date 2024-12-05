@@ -31,9 +31,16 @@ public class FacturaController {
         return ResponseEntity.badRequest().body(errores);
     }
     // COMPRAS
-    @GetMapping("/compras")
-    public ResponseEntity<?>findAll(){
-        return ResponseEntity.ok(compraService.findAll());
+    @GetMapping("/compras-todas/{tipo}")
+    public ResponseEntity<?>findAll(@PathVariable String tipo){
+        List<Compra>selecionada = new ArrayList<>();
+        List<Compra>compraList = compraService.findAll();
+        compraList.forEach(l->{
+            if(l.getTipo().equals(tipo)){
+                selecionada.add(l);
+            }
+        });
+       return ResponseEntity.ok(selecionada);
     }
     @GetMapping("/compras/{id}")
     public ResponseEntity<?>findById(@PathVariable Long id){
@@ -87,9 +94,16 @@ public class FacturaController {
         return ResponseEntity.notFound().build();
     }
     //VENTAS
-    @GetMapping("/ventas")
-    public ResponseEntity<?>findAllv(){
-        return ResponseEntity.ok(ventaService.findAll());
+    @GetMapping("/ventas-todas/{tipo}")
+    public ResponseEntity<?>findAllv(@PathVariable String tipo){
+        List<Venta>selecionada = new ArrayList<>();
+        List<Venta>compraList = ventaService.findAll();
+        compraList.forEach(l->{
+            if(l.getTipo().equals(tipo)){
+                selecionada.add(l);
+            }
+        });
+        return ResponseEntity.ok(selecionada);
     }
     @GetMapping("/ventas/{id}")
     public ResponseEntity<?>findByIdv(@PathVariable Long id){

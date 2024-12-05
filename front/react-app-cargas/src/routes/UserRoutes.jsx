@@ -22,6 +22,7 @@ import { RepartoPage } from '../pages/RepartoPage';
 import { RepartoForm } from '../components/RepartoForm';
 import { SeguimientoPage } from '../pages/SeguimientoPage';
 import { FacturacionPage } from '../pages/FacturacionPage';
+import { FacturacionList } from '../components/FacturacionList';
 
 export const UserRoutes = () => {
   const { login } = useAuth();
@@ -60,6 +61,7 @@ export const UserRoutes = () => {
                 <Route path="seguimiento" element={<SeguimientoPage />} />
                 <Route path="seguimiento/ver/:id" element={<RepartoForm />} />
                 <Route path="facturacion" element={<FacturacionPage />} />
+                <Route path="facturacion/:tipo"element={<FacturacionList/>} />
                 <Route path="facturacion/registrar" element={<FacturacionPage />} />
                 <Route path="facturacion/editar/:id" element={<FacturacionPage />} />
               </>

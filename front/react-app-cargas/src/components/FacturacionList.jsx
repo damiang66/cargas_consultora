@@ -3,18 +3,50 @@ import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { Calendar } from 'primereact/calendar';
 import { Button } from 'primereact/button';
-import axios from 'axios';
+import { Dialog } from 'primereact/dialog';
+import { InputText } from 'primereact/inputtext';
+import { InputNumber } from 'primereact/inputnumber';
+import { useParams } from 'react-router-dom';
+import { ComprasFIndAll, VentasFindAll } from '../services/facturacionService';
 
- export const FacturacionList = () => {
+export const FacturacionList = () => {
+    const { tipo } = useParams();
     const [facturas, setFacturas] = useState([]);
     const [filteredFacturas, setFilteredFacturas] = useState([]);
     const [startDate, setStartDate] = useState(null);
     const [endDate, setEndDate] = useState(null);
+    const [displayModal, setDisplayModal] = useState(false);
+    const [formData, setFormData] = useState({
+        fecha: null,
+        tipo: tipo,
+        cuit: '',
+        nombre: '',
+        nroFactura: '',
+        subTotal: null,
+        iva: null,
+        otro: null,
+        total: null
+    });
 
     useEffect(() => {
-        // Aquí se debe hacer la llamada al backend para obtener los datos iniciales.
-        
-    }, []);
+        if (tipo.startsWith('Compra')) {
+            traerCompras(tipo);
+        } else {
+            traerVentas(tipo);
+        }
+    }, [tipo]);
+
+    const traerCompras = async (tipo) => {
+        const respuesta = await ComprasFIndAll(tipo);
+        setFacturas(respuesta.data);
+        setFilteredFacturas(respuesta.data);
+    };
+
+    const traerVentas = async (tipo) => {
+        const respuesta = await VentasFindAll(tipo);
+        setFacturas(respuesta.data);
+        setFilteredFacturas(respuesta.data);
+    };
 
     const filterByDate = () => {
         if (startDate && endDate) {
@@ -26,6 +58,34 @@ import axios from 'axios';
         } else {
             setFilteredFacturas(facturas);
         }
+    };
+
+    const openModal = () => {
+        setDisplayModal(true);
+    };
+
+    const hideModal = () => {
+        setDisplayModal(false);
+    };
+
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        setFormData({ ...formData, [name]: value });
+    };
+
+    const handleSubmit = () => {
+        // Aquí deberías agregar la lógica para enviar los datos al backend.
+        console.log(formData);
+        hideModal();
+    };
+
+    const renderFooter = () => {
+        return (
+            <div>
+                <Button label="Cancelar" icon="pi pi-times" onClick={hideModal} className="p-button-text" />
+                <Button label="Guardar" icon="pi pi-check" onClick={handleSubmit} autoFocus />
+            </div>
+        );
     };
 
     return (
@@ -65,8 +125,47 @@ import axios from 'axios';
                 <Column field="otro" header="Otro" sortable />
                 <Column field="total" header="Total" sortable />
             </DataTable>
+            <Button label="Cargar" icon="pi pi-plus" onClick={openModal} />
+            <Dialog header="Nueva Factura" visible={displayModal} style={{ width: '50vw' }} footer={renderFooter()} onHide={hideModal}>
+                <div className="p-fluid">
+                    <div className="p-field">
+                        <label htmlFor="fecha">Fecha</label>
+                        <Calendar id="fecha" name="fecha" value={formData.fecha} onChange={handleInputChange} dateFormat="yy-mm-dd" showIcon />
+                    </div>
+                    <div className="p-field">
+                        <label htmlFor="cuit">CUIT</label>
+                        <InputText id="cuit" name="cuit" value={formData.cuit} onChange={handleInputChange} />
+                    </div>
+                    <div className="p-field">
+                        <label htmlFor="nombre">Nombre</label>
+                        <InputText id="nombre" name="nombre" value={formData.nombre} onChange={handleInputChange} />
+                    </div>
+                    <div className="p-field">
+                        <label htmlFor="nroFactura">Nro Factura</label>
+                        <InputText id="nroFactura" name="nroFactura" value={formData.nroFactura} onChange={handleInputChange} />
+                    </div>
+                    {(tipo === 'CompraA' || tipo === 'VentaA') && (
+                        <>
+                            <div className="p-field">
+                                <label htmlFor="subTotal">Subtotal</label>
+                                <InputNumber id="subTotal" name="subTotal" value={formData.subTotal} onValueChange={(e) => setFormData({ ...formData, subTotal: e.value })} />
+                            </div>
+                            <div className="p-field">
+                                <label htmlFor="iva">IVA</label>
+                                <InputNumber id="iva" name="iva" value={formData.iva} onValueChange={(e) => setFormData({ ...formData, iva: e.value })} />
+                            </div>
+                            <div className="p-field">
+                                <label htmlFor="otro">Otro</label>
+                                <InputNumber id="otro" name="otro" value={formData.otro} onValueChange={(e) => setFormData({ ...formData, otro: e.value })} />
+                            </div>
+                        </>
+                    )}
+                    <div className="p-field">
+                        <label htmlFor="total">Total</label>
+                        <InputNumber id="total" name="total" value={formData.total} onValueChange={(e) => setFormData({ ...formData, total: e.value })} />
+                    </div>
+                </div>
+            </Dialog>
         </div>
     );
 };
-
-
