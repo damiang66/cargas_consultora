@@ -7,7 +7,7 @@ import { Dialog } from 'primereact/dialog';
 import { InputText } from 'primereact/inputtext';
 import { InputNumber } from 'primereact/inputnumber';
 import { useParams } from 'react-router-dom';
-import { ComprasFIndAll, VentasFindAll } from '../services/facturacionService';
+import { ComprasFIndAll, ComprasSave, VentasFindAll, VentasSave } from '../services/facturacionService';
 
 export const FacturacionList = () => {
     const { tipo } = useParams();
@@ -71,22 +71,59 @@ export const FacturacionList = () => {
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setFormData({ ...formData, [name]: value });
+
+        if (name === 'subTotal') {
+            const subTotal = parseFloat(value) || 0;
+            const iva = subTotal * 0.21;
+            const total = subTotal + iva + (formData.otro || 0);
+            setFormData({ ...formData, subTotal, iva, total });
+        }
+
+        if (name === 'otro') {
+            const otro = parseFloat(value) || 0;
+            const total = (formData.subTotal || 0) + (formData.iva || 0) + otro;
+            setFormData({ ...formData, otro, total });
+        }
     };
 
-    const handleSubmit = () => {
-        // Aquí deberías agregar la lógica para enviar los datos al backend.
-        console.log(formData);
+    const handleSubmit = async () => {
+        if (tipo.startsWith('Compra')) {
+            await ComprasSave(formData);
+            traerCompras(tipo); // Refresca la lista de facturas
+        } else {
+            await VentasSave(formData);
+            traerVentas(tipo); // Refresca la lista de facturas
+        }
         hideModal();
     };
+    const imprimir=()=>{
+        console.log(filteredFacturas);
+        
+    }
 
-    const renderFooter = () => {
-        return (
-            <div>
-                <Button label="Cancelar" icon="pi pi-times" onClick={hideModal} className="p-button-text" />
-                <Button label="Guardar" icon="pi pi-check" onClick={handleSubmit} autoFocus />
-            </div>
-        );
+    const calculateTotals = () => {
+        let totalSubtotal = 0;
+        let totalIva = 0;
+        let totalOtro = 0;
+        let totalTotal = 0;
+
+        filteredFacturas.forEach(factura => {
+            totalSubtotal += factura.subTotal || 0;
+            totalIva += factura.iva || 0;
+            totalOtro += factura.otro || 0;
+            totalTotal += factura.total || 0;
+        });
+
+        return {
+            totalSubtotal,
+            totalIva,
+            totalOtro,
+            totalTotal
+        };
     };
+
+    // Obtener los totales calculados
+    const { totalSubtotal, totalIva, totalOtro, totalTotal } = calculateTotals();
 
     return (
         <div className="facturacion-list">
@@ -120,13 +157,14 @@ export const FacturacionList = () => {
                 <Column field="cuit" header="CUIT" sortable />
                 <Column field="nombre" header="Nombre" sortable />
                 <Column field="nroFactura" header="Nro Factura" sortable />
-                <Column field="subTotal" header="Subtotal" sortable />
-                <Column field="iva" header="IVA" sortable />
-                <Column field="otro" header="Otro" sortable />
-                <Column field="total" header="Total" sortable />
+                <Column field="subTotal" header="Subtotal" footer={totalSubtotal} sortable />
+                <Column field="iva" header="IVA" footer={totalIva} sortable />
+                <Column field="otro" header="Otro" footer={totalOtro} sortable />
+                <Column field="total" header="Total" footer={totalTotal} sortable />
             </DataTable>
-            <Button label="Cargar" icon="pi pi-plus" onClick={openModal} />
-            <Dialog header="Nueva Factura" visible={displayModal} style={{ width: '50vw' }} footer={renderFooter()} onHide={hideModal}>
+            <Button  className='m-2'label="Cargar" icon="pi pi-plus" onClick={openModal} />
+            <Button label="Imprimir" icon="pi pi-print" className='m-2' onClick={imprimir} />
+            <Dialog header="Nueva Factura" visible={displayModal} style={{ width: '50vw' }} onHide={hideModal}>
                 <div className="p-fluid">
                     <div className="p-field">
                         <label htmlFor="fecha">Fecha</label>
@@ -148,21 +186,21 @@ export const FacturacionList = () => {
                         <>
                             <div className="p-field">
                                 <label htmlFor="subTotal">Subtotal</label>
-                                <InputNumber id="subTotal" name="subTotal" value={formData.subTotal} onValueChange={(e) => setFormData({ ...formData, subTotal: e.value })} />
+                                <InputNumber id="subTotal" name="subTotal" value={formData.subTotal} onValueChange={(e) => handleInputChange({ target: { name: 'subTotal', value: e.value } })} />
                             </div>
                             <div className="p-field">
                                 <label htmlFor="iva">IVA</label>
-                                <InputNumber id="iva" name="iva" value={formData.iva} onValueChange={(e) => setFormData({ ...formData, iva: e.value })} />
+                                <InputNumber id="iva" name="iva" value={formData.iva} readOnly />
                             </div>
                             <div className="p-field">
                                 <label htmlFor="otro">Otro</label>
-                                <InputNumber id="otro" name="otro" value={formData.otro} onValueChange={(e) => setFormData({ ...formData, otro: e.value })} />
+                                <InputNumber id="otro" name="otro" value={formData.otro} onValueChange={(e) => handleInputChange({ target: { name: 'otro', value: e.value } })} />
                             </div>
                         </>
                     )}
                     <div className="p-field">
                         <label htmlFor="total">Total</label>
-                        <InputNumber id="total" name="total" value={formData.total} onValueChange={(e) => setFormData({ ...formData, total: e.value })} />
+                        <InputNumber id="total" name="total" value={formData.total} readOnly />
                     </div>
                 </div>
             </Dialog>
