@@ -8,10 +8,10 @@ export const FacturacionPage = () => {
     <div className="facturacion-page">
     <h1>Facturación</h1>
     <div className="options-container">
-    <OptionCard title="CompraA" description="Realiza una compra tipo A" />
-        <OptionCard title="CompraB" description="Realiza una compra tipo B"/>
-        <OptionCard title="VentaA" description="Realiza una venta tipo A" />
-        <OptionCard title="VentaB" description="Realiza una venta tipo B"  />
+    <OptionCard titulo='Compra Factura A' title="CompraA" description="Realiza una compra tipo A" />
+        <OptionCard titulo='Compra Factura C' title="CompraB" description="Realiza una compra tipo C"/>
+        <OptionCard titulo='Damian factura A' title="VentaA" description="Realiza una venta tipo A" />
+        <OptionCard titulo='Clarisa Factura C'title="VentaB" description="Realiza una venta tipo C"  />
     </div>
   </div>
   )

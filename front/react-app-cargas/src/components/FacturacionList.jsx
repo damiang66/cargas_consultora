@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
-import { Calendar } from 'primereact/calendar';
 import { Button } from 'primereact/button';
 import { Dialog } from 'primereact/dialog';
 import { InputText } from 'primereact/inputtext';
 import { InputNumber } from 'primereact/inputnumber';
+import { Calendar } from 'primereact/calendar';
 import { useParams } from 'react-router-dom';
-import { ComprasFIndAll, ComprasSave, VentasFindAll, VentasSave } from '../services/facturacionService';
+import { ComprasFIndAll, VentasFindAll } from '../services/facturacionService';
 
 export const FacturacionList = () => {
     const { tipo } = useParams();
@@ -17,6 +17,7 @@ export const FacturacionList = () => {
     const [endDate, setEndDate] = useState(null);
     const [displayModal, setDisplayModal] = useState(false);
     const [formData, setFormData] = useState({
+        id: null,
         fecha: null,
         tipo: tipo,
         cuit: '',
@@ -27,6 +28,7 @@ export const FacturacionList = () => {
         otro: null,
         total: null
     });
+    const [selectedFactura, setSelectedFactura] = useState(null);
 
     useEffect(() => {
         if (tipo.startsWith('Compra')) {
@@ -60,12 +62,30 @@ export const FacturacionList = () => {
         }
     };
 
-    const openModal = () => {
+    const openModal = (factura = null) => {
+        if (factura) {
+            setSelectedFactura(factura);
+            setFormData(factura);
+        } else {
+            setFormData({
+                id: null,
+                fecha: null,
+                tipo: tipo,
+                cuit: '',
+                nombre: '',
+                nroFactura: '',
+                subTotal: null,
+                iva: null,
+                otro: null,
+                total: null
+            });
+        }
         setDisplayModal(true);
     };
 
     const hideModal = () => {
         setDisplayModal(false);
+        setSelectedFactura(null);
     };
 
     const handleInputChange = (e) => {
@@ -87,19 +107,21 @@ export const FacturacionList = () => {
     };
 
     const handleSubmit = async () => {
-        if (tipo.startsWith('Compra')) {
-            await ComprasSave(formData);
-            traerCompras(tipo); // Refresca la lista de facturas
+        if (selectedFactura) {
+            const updatedFactura = { ...formData, id: selectedFactura.id };
         } else {
-            await VentasSave(formData);
-            traerVentas(tipo); // Refresca la lista de facturas
+            const newFactura = { ...formData, id: Date.now() };
         }
         hideModal();
     };
-    const imprimir=()=>{
-        console.log(filteredFacturas);
-        
-    }
+
+    const handleDelete = async (facturaId) => {
+        // Aquí va la lógica para eliminar la factura, por ejemplo, haciendo una petición DELETE.
+        // Suponiendo que tienes una función eliminarFactura(facturaId):
+        // await eliminarFactura(facturaId);
+        setFacturas(facturas.filter(factura => factura.id !== facturaId));
+        setFilteredFacturas(filteredFacturas.filter(factura => factura.id !== facturaId));
+    };
 
     const calculateTotals = () => {
         let totalSubtotal = 0;
@@ -122,8 +144,28 @@ export const FacturacionList = () => {
         };
     };
 
-    // Obtener los totales calculados
     const { totalSubtotal, totalIva, totalOtro, totalTotal } = calculateTotals();
+
+    const handlePrint = () => {
+        const content = document.getElementById('factura-table');
+        const printWindow = window.open('', '', 'width=800,height=600');
+        printWindow.document.write('<html><head><title>Facturas</title><style>');
+        printWindow.document.write(`
+            body { font-family: Arial, sans-serif; margin: 0; padding: 0; }
+            table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+            th, td { padding: 10px; text-align: left; border: 1px solid #ddd; }
+            th { background-color: #f2f2f2; }
+            h2 { text-align: center; margin-bottom: 20px; }
+            .footer { text-align: center; margin-top: 20px; }
+        `);
+        printWindow.document.write('</style></head><body>');
+        printWindow.document.write('<h2>Listado de Facturas</h2>');
+        printWindow.document.write(content.innerHTML);
+        printWindow.document.write('<div class="footer">Generado por la aplicación de Facturación</div>');
+        printWindow.document.write('</body></html>');
+        printWindow.document.close();
+        printWindow.print();
+    };
 
     return (
         <div className="facturacion-list">
@@ -150,7 +192,8 @@ export const FacturacionList = () => {
                     <Button label="Filtrar" icon="pi pi-search" onClick={filterByDate} />
                 </div>
             </div>
-            <DataTable value={filteredFacturas} paginator rows={10} className="p-datatable-gridlines">
+            <Button label="Imprimir" icon="pi pi-print" onClick={handlePrint} className="p-mb-2" />
+            <DataTable id="factura-table" value={filteredFacturas} paginator rows={10} className="p-datatable-gridlines">
                 <Column field="id" header="ID" sortable />
                 <Column field="fecha" header="Fecha" sortable />
                 <Column field="tipo" header="Tipo" sortable />
@@ -161,10 +204,17 @@ export const FacturacionList = () => {
                 <Column field="iva" header="IVA" footer={totalIva} sortable />
                 <Column field="otro" header="Otro" footer={totalOtro} sortable />
                 <Column field="total" header="Total" footer={totalTotal} sortable />
+                <Column
+                    body={(rowData) => (
+                        <>
+                            <Button label="Editar" icon="pi pi-pencil" onClick={() => openModal(rowData)} className="p-mr-2" />
+                            <Button label="Eliminar" icon="pi pi-trash" onClick={() => handleDelete(rowData.id)} className="p-button-danger" />
+                        </>
+                    )}
+                    header="Acciones"
+                />
             </DataTable>
-            <Button  className='m-2'label="Cargar" icon="pi pi-plus" onClick={openModal} />
-            <Button label="Imprimir" icon="pi pi-print" className='m-2' onClick={imprimir} />
-            <Dialog header="Nueva Factura" visible={displayModal} style={{ width: '50vw' }} onHide={hideModal}>
+            <Dialog header="Editar Factura" visible={displayModal} style={{ width: '50vw' }} onHide={hideModal}>
                 <div className="p-fluid">
                     <div className="p-field">
                         <label htmlFor="fecha">Fecha</label>
@@ -179,29 +229,26 @@ export const FacturacionList = () => {
                         <InputText id="nombre" name="nombre" value={formData.nombre} onChange={handleInputChange} />
                     </div>
                     <div className="p-field">
-                        <label htmlFor="nroFactura">Nro Factura</label>
+                        <label htmlFor="nroFactura">Número de Factura</label>
                         <InputText id="nroFactura" name="nroFactura" value={formData.nroFactura} onChange={handleInputChange} />
                     </div>
-                    {(tipo === 'CompraA' || tipo === 'VentaA') && (
-                        <>
-                            <div className="p-field">
-                                <label htmlFor="subTotal">Subtotal</label>
-                                <InputNumber id="subTotal" name="subTotal" value={formData.subTotal} onValueChange={(e) => handleInputChange({ target: { name: 'subTotal', value: e.value } })} />
-                            </div>
-                            <div className="p-field">
-                                <label htmlFor="iva">IVA</label>
-                                <InputNumber id="iva" name="iva" value={formData.iva} readOnly />
-                            </div>
-                            <div className="p-field">
-                                <label htmlFor="otro">Otro</label>
-                                <InputNumber id="otro" name="otro" value={formData.otro} onValueChange={(e) => handleInputChange({ target: { name: 'otro', value: e.value } })} />
-                            </div>
-                        </>
-                    )}
+                    <div className="p-field">
+                        <label htmlFor="subTotal">Subtotal</label>
+                        <InputNumber id="subTotal" name="subTotal" value={formData.subTotal} onValueChange={handleInputChange} mode="decimal" />
+                    </div>
+                    <div className="p-field">
+                        <label htmlFor="iva">IVA</label>
+                        <InputNumber id="iva" name="iva" value={formData.iva} disabled mode="decimal" />
+                    </div>
+                    <div className="p-field">
+                        <label htmlFor="otro">Otros</label>
+                        <InputNumber id="otro" name="otro" value={formData.otro} onValueChange={handleInputChange} mode="decimal" />
+                    </div>
                     <div className="p-field">
                         <label htmlFor="total">Total</label>
-                        <InputNumber id="total" name="total" value={formData.total} readOnly />
+                        <InputNumber id="total" name="total" value={formData.total} disabled mode="decimal" />
                     </div>
+                    <Button label="Guardar" icon="pi pi-check" onClick={handleSubmit} />
                 </div>
             </Dialog>
         </div>

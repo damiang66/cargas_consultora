@@ -61,6 +61,8 @@ export const RepartoViajeFIndAll= async (nroViaje)=>{
     }
     }
     export const RepartoExport = async (format, data) => {
+        console.log(data);
+        
         try {
             const response = await axios.post(`${BASE_URL}/api/repartos/export/${format}`, data, {
                 ...config(),

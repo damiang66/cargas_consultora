@@ -9,24 +9,25 @@ import Swal from 'sweetalert2';
 
 export const RepartoList = ({ repartos }) => {
     const [filters, setFilters] = useState({
-        'viaje.numeroViaje': { value: null, matchMode: 'equals' },
+        'viaje.numeroViaje': { value: '', matchMode: 'equals' },
         'fechaInicio': { value: null, matchMode: 'equals' },
         'fechaFin': { value: null, matchMode: 'equals' },
-        'fleteros.nombre': { value: null, matchMode: 'contains' }
+        'fleteros.nombre': { value: '', matchMode: 'contains' }
     });
     const [filteredRepartos, setFilteredRepartos] = useState(repartos);
     const [totalImporte, setTotalImporte] = useState(0);
+    const [sortOrder, setSortOrder] = useState(1); // 1 for ascending, -1 for descending
 
     useEffect(() => {
-        filterRepartos();
-    }, [filters]);
+        filterAndSortRepartos();
+    }, [filters, repartos, sortOrder]);
 
-    const filterRepartos = () => {
+    const filterAndSortRepartos = () => {
         let tempRepartos = repartos;
 
         if (filters['viaje.numeroViaje'].value) {
             tempRepartos = tempRepartos.filter(reparto =>
-                reparto.viaje.numeroViaje === parseInt(filters['viaje.numeroViaje'].value)
+                reparto.viaje.numeroViaje.toString().includes(filters['viaje.numeroViaje'].value)
             );
         }
 
@@ -42,6 +43,8 @@ export const RepartoList = ({ repartos }) => {
                 reparto.fleteros.nombre.toLowerCase().includes(filters['fleteros.nombre'].value.toLowerCase())
             );
         }
+
+        tempRepartos = tempRepartos.sort((a, b) => (a.viaje.numeroViaje > b.viaje.numeroViaje ? sortOrder : -sortOrder));
 
         setFilteredRepartos(tempRepartos);
         calculateTotalImporte(tempRepartos);
@@ -73,19 +76,19 @@ export const RepartoList = ({ repartos }) => {
     };
 
     const enviarAlBackend = async (format) => {
-      const data = {
-          filteredRepartos: filteredRepartos, // Envía los repartos filtrados
-          totalImporte // Enviar el total de importe, si es necesario
-      };
-      const config = () => {
-        return {
-            headers: {
-                "Content-Type": "application/json",
-            }
+        const data = {
+            filteredRepartos: filteredRepartos, // Envía los repartos filtrados
+            totalImporte // Enviar el total de importe, si es necesario
+        };
+
+        try {
+            await RepartoExport(format, data);
+            Swal.fire('Exportación exitosa', `Los repartos se han exportado correctamente a ${format.toUpperCase()}`, 'success');
+        } catch (error) {
+            console.error('Error exporting files:', error);
+            Swal.fire('Error en la exportación', `Hubo un problema al exportar los repartos a ${format.toUpperCase()}`, 'error');
         }
-    }
-      await RepartoExport(format, data);
-  }    
+    };
 
     const editar = (rowData) => {
         return (
@@ -118,6 +121,10 @@ export const RepartoList = ({ repartos }) => {
         } catch (error) {
             throw error;
         }
+    };
+
+    const toggleSortOrder = () => {
+        setSortOrder(sortOrder * -1);
     };
 
     return (
@@ -158,11 +165,19 @@ export const RepartoList = ({ repartos }) => {
                     placeholder="Fletero"
                 />
             </div>
-
+{console.log(filteredRepartos)
+}
             <DataTable value={filteredRepartos} tableStyle={{ minWidth: '50rem' }} paginator rows={10}>
                 <Column field="id" header="ID"></Column>
                 <Column field="descripcion" header="Descripción"></Column>
-                <Column field="viaje.numeroViaje" header="Viaje"></Column>
+                <Column
+                    field="viaje.numeroViaje"
+                    header="Viaje"
+                    sortable
+                    onSort={() => toggleSortOrder()}
+                    sortField="viaje.numeroViaje"
+                    sortOrder={sortOrder}
+                ></Column>
                 <Column field="fecha" header="Fecha"></Column>
                 <Column field="fleteros.nombre" header="Fletero"></Column>
                 <Column field="precio" header="Importe"></Column>

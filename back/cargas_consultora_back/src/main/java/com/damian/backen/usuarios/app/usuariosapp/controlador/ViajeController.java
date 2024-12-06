@@ -1,7 +1,6 @@
 package com.damian.backen.usuarios.app.usuariosapp.controlador;
 
 import com.damian.backen.usuarios.app.usuariosapp.endidad.Item;
-import com.damian.backen.usuarios.app.usuariosapp.endidad.Reparto;
 import com.damian.backen.usuarios.app.usuariosapp.endidad.Viaje;
 import com.damian.backen.usuarios.app.usuariosapp.repositorio.ItemRepository;
 import com.damian.backen.usuarios.app.usuariosapp.service.RepartoService;
@@ -177,17 +176,21 @@ public class ViajeController {
         Document document = new Document(pdf);
 
         for (Viaje viaje : viajes) {
-            document.add(new Paragraph("Numero de Viaje: " + viaje.getNumeroViaje()));
             document.add(new Paragraph("Fecha: " + viaje.getFecha()));
-            document.add(new Paragraph("Total Bultos: " + viaje.getTotalBultos()));
-            document.add(new Paragraph("Total Kilos: " + viaje.getTotalKilos()));
+            document.add(new Paragraph("Nro Viaje: " + viaje.getNumeroViaje()));
+            document.add(new Paragraph("Cliente\tKilos"));
 
+            double totalKilos = 0;
             for (Item item : viaje.getItems()) {
                 if (item.getCliente() != null) {
-                    document.add(new Paragraph("Cliente: " + item.getCliente().getNumeroCliente()));
+                    document.add(new Paragraph(item.getCliente().getNumeroCliente() + "\t" + item.getKilos()));
+                    totalKilos += item.getKilos();
                 }
             }
 
+            document.add(new Paragraph("Total\t" + totalKilos));
+            document.add(new Paragraph("Diferencia\t" + viaje.getDiferenciaKilos()));
+            document.add(new Paragraph("Total\t" + (totalKilos + viaje.getDiferenciaKilos())));
             document.add(new Paragraph("-----------"));
         }
 
@@ -200,29 +203,56 @@ public class ViajeController {
         Workbook workbook = new XSSFWorkbook();
         Sheet sheet = workbook.createSheet("Viajes");
 
-        // Crear cabecera
-        Row headerRow = sheet.createRow(0);
-        headerRow.createCell(0).setCellValue("Numero de Viaje");
-        headerRow.createCell(1).setCellValue("Fecha");
-        headerRow.createCell(2).setCellValue("Total Bultos");
-        headerRow.createCell(3).setCellValue("Total Kilos");
-        headerRow.createCell(4).setCellValue("Cliente");
+        int rowNum = 0;
 
-        // Llenar datos
-        int rowNum = 1;
         for (Viaje viaje : viajes) {
-            for (Item item : viaje.getItems()) {
-                Row row = sheet.createRow(rowNum++);
-                row.createCell(0).setCellValue(viaje.getNumeroViaje());
-                row.createCell(1).setCellValue(viaje.getFecha().toString());
-                row.createCell(2).setCellValue(viaje.getTotalBultos());
-                row.createCell(3).setCellValue(viaje.getTotalKilos());
+            // Fecha y número de viaje
+            Row fechaRow = sheet.createRow(rowNum++);
+            fechaRow.createCell(0).setCellValue("Fecha");
+            fechaRow.createCell(1).setCellValue(viaje.getFecha().toString());
 
-                // Incluir el numero del cliente de cada item
+            Row numeroViajeRow = sheet.createRow(rowNum++);
+            numeroViajeRow.createCell(0).setCellValue("Nro Viaje");
+            numeroViajeRow.createCell(1).setCellValue(viaje.getNumeroViaje());
+
+            // Crear encabezado de la tabla
+            Row headerRow = sheet.createRow(rowNum++);
+            headerRow.createCell(0).setCellValue("Cliente");
+            headerRow.createCell(1).setCellValue("Kilos");
+
+            double totalKilos = 0;
+
+            // Llenar filas de clientes y kilos
+            for (Item item : viaje.getItems()) {
                 if (item.getCliente() != null) {
-                    row.createCell(4).setCellValue(item.getCliente().getNumeroCliente());
+                    Row row = sheet.createRow(rowNum++);
+                    row.createCell(0).setCellValue(item.getCliente().getNumeroCliente());
+                    row.createCell(1).setCellValue(item.getKilos());
+                    totalKilos += item.getKilos();
                 }
             }
+
+            // Agregar fila de total de kilos
+            Row totalKilosRow = sheet.createRow(rowNum++);
+            totalKilosRow.createCell(0).setCellValue("Total");
+            totalKilosRow.createCell(1).setCellValue(totalKilos);
+
+            // Calcular la diferencia y total final
+            double diferencia = viaje.getDiferenciaKilos();
+            double totalFinal = totalKilos + diferencia;
+
+            // Agregar fila de diferencia
+            Row diferenciaRow = sheet.createRow(rowNum++);
+            diferenciaRow.createCell(0).setCellValue("Diferencia");
+            diferenciaRow.createCell(1).setCellValue(diferencia);
+
+            // Agregar fila de total final
+            Row totalFinalRow = sheet.createRow(rowNum++);
+            totalFinalRow.createCell(0).setCellValue("Total");
+            totalFinalRow.createCell(1).setCellValue(totalFinal);
+
+            // Añadir una fila vacía para separar viajes
+            sheet.createRow(rowNum++);
         }
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -231,21 +261,4 @@ public class ViajeController {
 
         return baos.toByteArray();
     }
-    @PutMapping("/terminado/{id}")
-    public ResponseEntity<?>terminado (@RequestBody Viaje viaje1, @PathVariable Long id){
-        Optional<Viaje>optionalViaje = viajeService.findById(id);
-        Viaje viaje = null;
-        if(optionalViaje.isPresent()){
-            viaje = optionalViaje.get();
-            if(viaje1.getTerminado()){
-                viaje.setTerminado(false);
-            }else {
-                viaje.setTerminado(true);
-            }
-            return ResponseEntity.ok(viaje);
-
-        }
-        return ResponseEntity.notFound().build();
-    }
-
 }

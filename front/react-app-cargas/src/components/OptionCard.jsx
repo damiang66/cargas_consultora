@@ -1,7 +1,8 @@
+
 import React, { useState } from 'react'
 import '../assets/style/OptionCard.css'
 import { useNavigate } from 'react-router-dom'
-export const OptionCard = ({ title, description, onClick }) => {
+export const OptionCard = ({ title, description, onClick,titulo }) => {
   const[tipo,setTipo]=useState("")
   const[facturacion,setFacturacion]=useState("")
   const navigate = useNavigate();
@@ -13,7 +14,8 @@ export const OptionCard = ({ title, description, onClick }) => {
 
 
     <div className="option-card">
-    <h2>{title}</h2>
+    <h2>{titulo}</h2>
+    <p hidden>{title}</p>
     <p>{description}</p>
     <button  onClick={() => handleOptionClick(title)}>Seleccionar</button>
   </div>

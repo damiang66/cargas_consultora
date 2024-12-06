@@ -6,6 +6,7 @@ import { NavLink } from 'react-router-dom';
 import { Calendar } from 'primereact/calendar';
 import Swal from 'sweetalert2';
 import { viajeExport } from '../services/viajeService';
+import { InputText } from 'primereact/inputtext';
 
 export const ViajeList = ({ lista }) => {
   const { viajes, getViajes, handlerRemoveViaje } = useViajes();
@@ -62,7 +63,7 @@ export const ViajeList = ({ lista }) => {
   const excel = (rowData) => {
     return (
       <button className="btn btn-success" onClick={() => excelImprimir(rowData.id)}>
-        Excel
+        Exportar
       </button>
     );
   };
@@ -104,8 +105,6 @@ export const ViajeList = ({ lista }) => {
 
     const data = {
       viajes: datosFiltrados,  // Solo los datos visibles en la tabla
-     // fechaInicio,
-    //  fechaFin
     };
     try {
       const respuesta = await viajeExport(data);
@@ -114,6 +113,20 @@ export const ViajeList = ({ lista }) => {
       console.error('Error exporting files:', error);
       Swal.fire('Error en la exportación', 'Hubo un problema al exportar los archivos', 'error');
     }
+  };
+
+  const onFilter = (e) => {
+    const { field, value } = e.target;
+    let newBuscador = [...viajes];
+    if (value) {
+      newBuscador = newBuscador.filter((item) => {
+        if (item[field] !== null && item[field] !== undefined) {
+          return item[field].toString().toLowerCase().includes(value.toLowerCase());
+        }
+        return false;
+      });
+    }
+    setBuscador(newBuscador);
   };
 
   return (
@@ -137,15 +150,15 @@ export const ViajeList = ({ lista }) => {
         />
       </div>
 
-      <DataTable value={buscador} tableStyle={{ minWidth: '50rem' }}>
-        <Column field="numeroViaje" header="Numero Viaje"></Column>
-        <Column field="fecha" header="Fecha"></Column>
-        <Column field="totalBultos" header="Total Bultos"></Column>
-        <Column field="totalKilos" header="Total Kilos"></Column>
-        <Column body={editar} header="Editar"></Column>
-        <Column body={remove} header="Eliminar"></Column>
-        <Column body={imprimir} header="Imprimir"></Column>
-        <Column body={excel} header="Exportar"></Column>
+      <DataTable value={buscador} tableStyle={{ minWidth: '50rem' }} paginator rows={10}>
+        <Column field="numeroViaje" header="Numero Viaje" filter filterElement={<InputText type="search" onInput={(e) => onFilter({ target: { field: 'numeroViaje', value: e.target.value } })} />} />
+        <Column field="fecha" header="Fecha" filter filterElement={<InputText type="search" onInput={(e) => onFilter({ target: { field: 'fecha', value: e.target.value } })} />} />
+        <Column field="totalBultos" header="Total Bultos" filter filterElement={<InputText type="search" onInput={(e) => onFilter({ target: { field: 'totalBultos', value: e.target.value } })} />} />
+        <Column field="totalKilos" header="Total Kilos" filter filterElement={<InputText type="search" onInput={(e) => onFilter({ target: { field: 'totalKilos', value: e.target.value } })} />} />
+        <Column body={editar} header="Editar" />
+        <Column body={remove} header="Eliminar" />
+        <Column body={imprimir} header="Imprimir" />
+        <Column body={excel} header="Exportar" />
       </DataTable>
 
       {/* Botón para enviar los datos filtrados al backend */}

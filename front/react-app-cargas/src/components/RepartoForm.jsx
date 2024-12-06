@@ -17,7 +17,7 @@ import { FleterosFindAll } from '../services/flererosService';
 
 export const RepartoForm = () => {
     const { id } = useParams();
-    const navegar = useNavigate()
+    const navegar = useNavigate();
     
     const [viajeId, setViajeId] = useState('');
     const [descripcion, setDescripcion] = useState('');
@@ -27,13 +27,10 @@ export const RepartoForm = () => {
     const [fecha, setFecha] = useState(null);
     const [precio, setPrecio] = useState(0);
     const [clientesDisponibles, setClientesDisponibles] = useState([]);
-    const [items,setItems]=useState([])
+    const [items, setItems] = useState([]);
     const [fleterosDisponibles, setFleterosDisponibles] = useState([]);
     const [viajesDisponibles, setViajesDisponibles] = useState([]);
-   let clienteBack=[];
-   let fleteBack;
-   let viajeBack;
-
+    
     useEffect(() => {
         cargarFleteros();
         cargarViajes();
@@ -63,18 +60,24 @@ export const RepartoForm = () => {
 
     const cargarReparto = async (id) => {
         try {
-            const response = await RepartoFindById(id)
+            const response = await RepartoFindById(id);
             const reparto = response.data;
-            setViajeId(reparto.viaje.id);
+            
+            setViajeId(reparto.viaje.id); // Asignar el ID del viaje
             setDescripcion(reparto.descripcion);
-            setClientes(reparto.clientes);
-            setSelectedFletero(reparto.fleteros);
+            
+            // Cargar los IDs de los clientes seleccionados
+            setClientes(reparto.clientes.map(c => c.id)); // Solo extraemos los IDs de los clientes
+            
+            // Cargar el ID del fletero seleccionado
+            setSelectedFletero(reparto.fleteros.id); // Solo el ID del fletero
+            
             setPagado(reparto.pagado);
             setFecha(new Date(reparto.fecha));
             setPrecio(reparto.precio);
-
-            // Cargar clientes disponibles del viaje asociado
-            const viajeResponse = await viajeFindById(viajeId);
+            
+            // Cargar los clientes disponibles según el viaje seleccionado
+            const viajeResponse = await viajeFindById(reparto.viaje.id);
             setClientesDisponibles(viajeResponse.data.clientes);
         } catch (error) {
             Swal.fire('Error', 'Error al cargar el reparto', 'error');
@@ -82,33 +85,17 @@ export const RepartoForm = () => {
     };
 
     const handleViajeChange = async (e) => {
-        console.log(e.value);
-        
         setViajeId(e.value);
         try {
-            const response = await viajeBuscar(e.value.numeroViaje)
+            const response = await viajeBuscar(e.value.numeroViaje);
             if (response.data) {
-                console.log(response.data[0]);
+                const clie = response.data[0];
+                setItems(clie?.items);
                 
-              // Mapeamos los clientes del viaje a un formato adecuado para el DataTable
-            let clie = response.data[0]
-            
-            let clientes = []
-            console.log(clie?.items);
-           setItems(clie?.items)
-             clie?.items.map(m => {
-               clientes.push(m.cliente)
-            })
-            console.log(clientes);
-            clientes.forEach(c=>{
-                //console.log(c);
-                
-                clienteBack.push(c.id)
-               // console.log("clienteId"+ clienteBack);
-                
-            })
-            setClientesDisponibles(clientes);
-                
+                const clientes = clie?.items.map(m => m.cliente);
+                setClientesDisponibles(clientes);
+
+                setClientes(clientes.map(c => c.id)); // Solo extraemos los IDs de los clientes
             } else {
                 Swal.fire('Error', 'Viaje no encontrado', 'error');
             }
@@ -119,54 +106,84 @@ export const RepartoForm = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log(items);
-        
-        viajeBack=viajeId.id
-        fleteBack= selectedFletero.id
+    
+        // Asegúrate de que selectedClientes contiene los clientes seleccionados correctamente
+        const selectedClientes = clientes.length > 0 ? clientes.map(cliente => cliente.id) : [];
+    
+        // Si no hay clientes seleccionados, mantén todos los items del viaje
+        const filteredItems = selectedClientes.length > 0
+            ? items.filter(item => selectedClientes.includes(item.cliente.id))  // Filtra solo si hay clientes seleccionados
+            : items;  // Si no hay clientes seleccionados, no se hace ningún filtro
+    
+        console.log("Filtered Items: ", filteredItems);  // Verifica que los items filtrados sean correctos
+    
+        // Si no hay items después de filtrar, muestra un error
+       /* if (filteredItems.length === 0) {
+            Swal.fire('Error', 'No se ha seleccionado ningún cliente válido', 'error');
+            return;
+        }*/
+    
+        // Ahora, si hay items válidos, puedes continuar con el resto de la lógica
+        //let selectedFletero = selectedFletero ? { id: selectedFletero.id } : null;
+        const viajeBack = viajeId;
+        const fleteBack = selectedFletero;
+    
         const reparto = {
-            descripcion: descripcion,  // Descripción del reparto
-            viaje: {
-                id: viajeBack  // ID del viaje
-            },
-            items: items.map(i => ({ id: i.id })),  // Lista de objetos con los IDs de clientes
-            fleteros: {
-                id: fleteBack  // ID del fletero
-            },
-            pagado: pagado,  // Estado de pago
-            fecha: fecha,  // Fecha del reparto
-            precio: precio  // Precio asociado al reparto
+            descripcion: descripcion,
+            viaje:{id:viajeBack.id} ,
+            items: filteredItems.map(i => ({ id: i.id })),  // Solo envía los items válidos
+            fleteros:{id:selectedFletero.id} ,
+            pagado: pagado,
+            fecha: fecha,
+            precio: precio
         };
+    
+        // Agregar los clientes seleccionados si hay alguno
+      /*  if (selectedClientes.length > 0) {
+            reparto.clientes = selectedClientes;
+        }*/
+       console.log(viajeBack.id);
+       
+    
         const repartoUpdate = {
-            id:id,
-            descripcion: descripcion,  // Descripción del reparto
-            viaje: {
-                id: viajeBack  // ID del viaje
-            },
-            items: items.map(i => ({ id: i.id })),  // Lista de objetos con los IDs de clientes
-            fleteros: {
-                id: fleteBack  // ID del fletero
-            },
-            pagado: pagado,  // Estado de pago
-            fecha: fecha,  // Fecha del reparto
-            precio: precio  // Precio asociado al reparto
+            id: id,
+            descripcion: descripcion,
+            viaje:{id:viajeBack.id} ,
+            items: filteredItems.map(i => ({ id: i.id })),
+            fleteros:{id:selectedFletero.id} ,
+            pagado: pagado,
+            fecha: fecha,
+            precio: precio
         };
+    
+        // Agregar los clientes seleccionados si hay alguno
+        /*
+        if (selectedClientes.length > 0) {
+            repartoUpdate.clientes = selectedClientes;
+        }
+            */
+        console.log(repartoUpdate);
+        console.log(reparto);
         try {
             if (id) {
-                console.log(repartoUpdate);
+              
                 
-               await RepartoUpdate(repartoUpdate);
+                await RepartoUpdate(repartoUpdate);
                 Swal.fire('Éxito', 'Reparto actualizado con éxito', 'success');
             } else {
-                console.log(reparto);
+               
                 
-             await RepartoSave(reparto);
+                await RepartoSave(reparto);
                 Swal.fire('Éxito', 'Reparto creado con éxito', 'success');
             }
-            navegar('/repartos')
+            navegar('/repartos');
         } catch (error) {
             Swal.fire('Error', 'Error guardando el reparto', 'error');
         }
     };
+    
+    
+    
 
     return (
         <div>
@@ -199,8 +216,8 @@ export const RepartoForm = () => {
                         <Column selectionMode="single" headerStyle={{ width: '3em' }}></Column>
                         <Column field="nombre" header="Nombre"></Column>
                         <Column field="descripcion" header="Teléfono"></Column>
-                        <Column field="precioPorKilometros" header="precioPorKilometros"></Column>
-                        <Column field="precioPorDia" header="precioPorDia"></Column>
+                        <Column field="precioPorKilometros" header="Precio por Kilómetros"></Column>
+                        <Column field="precioPorDia" header="Precio por Día"></Column>
                     </DataTable>
                 </div>
                 <div className="p-field">
@@ -219,4 +236,4 @@ export const RepartoForm = () => {
             </form>
         </div>
     );
-}
+};
