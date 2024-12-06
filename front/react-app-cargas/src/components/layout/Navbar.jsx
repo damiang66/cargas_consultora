@@ -9,7 +9,7 @@ export const Navbar = () => {
     return (
         <nav className="navbar navbar-expand-lg bg-body-tertiary">
             <div className="container-fluid">
-                <a className="navbar-brand" href="#">UsersApp</a>
+               
                 <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                     <span className="navbar-toggler-icon"></span>
                 </button>
@@ -25,6 +25,62 @@ export const Navbar = () => {
                             <li className="nav-item">
                                 <NavLink className="nav-link" to="/users/register">
                                     Registrar Usuario
+                                </NavLink>
+                            </li>
+                        }
+                          {!login.isAdmin ||
+                            <li className="nav-item">
+                                <NavLink className="nav-link" to="/clientes">
+                                   Clientes
+                                </NavLink>
+                            </li>
+                        }
+                          {!login.isAdmin ||
+                            <li className="nav-item">
+                                <NavLink className="nav-link" to="/viajes">
+                                   cargar Viajes
+                                </NavLink>
+                            </li>
+                        }
+                         {!login.isAdmin ||
+                            <li className="nav-item">
+                                <NavLink className="nav-link" to="/liquidaciones">
+                                   cargar Liquidaciones
+                                </NavLink>
+                            </li>
+                        }
+                         {!login.isAdmin ||
+                            <li className="nav-item">
+                                <NavLink className="nav-link" to="/reportes">
+                                  Reportes
+                                </NavLink>
+                            </li>
+                        }
+                          {!login.isAdmin ||
+                            <li className="nav-item">
+                                <NavLink className="nav-link" to="/fleteros">
+                                  Fleteros
+                                </NavLink>
+                            </li>
+                        }
+                         {!login.isAdmin ||
+                            <li className="nav-item">
+                                <NavLink className="nav-link" to="/repartos">
+                                  Gastos
+                                </NavLink>
+                            </li>
+                        }
+                        {!login.isAdmin ||
+                            <li className="nav-item">
+                                <NavLink className="nav-link" to="/seguimiento">
+                                  Seguimiento
+                                </NavLink>
+                            </li>
+                        }
+                          {!login.isAdmin ||
+                            <li className="nav-item">
+                                <NavLink className="nav-link" to="/facturacion">
+                                  Facturacion
                                 </NavLink>
                             </li>
                         }

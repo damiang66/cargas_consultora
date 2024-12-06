@@ -29,7 +29,7 @@ public class ClienteServiceImpl implements ClienteService {
     }
 
     @Override
-    public Optional<Cliente> findByNroCliente(Long nroCliente) {
+    public List<Cliente> findByNroCliente(Long nroCliente) {
         return clienteRepository.findByNumeroCliente(nroCliente);
     }
 

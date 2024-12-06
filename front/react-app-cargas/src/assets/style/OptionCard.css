@@ -1,0 +1,36 @@
+/* src/styles/OptionCard.css */
+.option-card {
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 20px;
+    width: 200px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s;
+  }
+  
+  .option-card:hover {
+    transform: scale(1.05);
+  }
+  
+  .option-card h2 {
+    margin-top: 0;
+  }
+  
+  .option-card p {
+    color: #666;
+  }
+  
+  .option-card button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 10px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+  
+  .option-card button:hover {
+    background-color: #0056b3;
+  }
