@@ -17,6 +17,7 @@ import com.itextpdf.layout.element.Cell;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 
 @RestController
 @RequestMapping("/api/repartos")
@@ -120,8 +121,10 @@ public class RepartoPdfController {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         Workbook workbook = new XSSFWorkbook();
         Sheet sheet = workbook.createSheet("Repartos");
-        double iva =0.0;
+        double iva = 0.0;
+
         // Crear la fila de encabezados
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
         Row headerRow = sheet.createRow(0);
         String[] columns = {"Numero de Viaje", "Fecha", "Fletero Nombre", "Descripcion", "Cliente", "Kilos", "Importe", "Iva", "Total"};
 
@@ -135,40 +138,47 @@ public class RepartoPdfController {
         for (RepartoDto.Reparto reparto : repartoDto.getFilteredRepartos()) {
             double totalKilos = 0;
             boolean fleteroDataAdded = false;
+            Row lastRow = null;
 
             if (reparto.getItems().isEmpty()) {
+                String formattedDate = dateFormat.format(reparto.getFecha());
                 // Si no hay clientes, aún necesitamos agregar una fila para el fletero
                 Row row = sheet.createRow(rowIdx++);
                 row.createCell(0).setCellValue(reparto.getViaje().getNumeroViaje());
-                row.createCell(1).setCellValue(reparto.getFecha().toString());
+                row.createCell(1).setCellValue(formattedDate);
                 row.createCell(2).setCellValue(reparto.getFleteros().getNombre());
                 row.createCell(3).setCellValue(reparto.getDescripcion());
                 row.createCell(6).setCellValue(reparto.getPrecio());
-                row.createCell(7).setCellValue(reparto.getPrecio()*21/100);
-                iva = reparto.getPrecio()*21/100;
-                row.createCell(8).setCellValue(reparto.getPrecio()+iva);
+                row.createCell(7).setCellValue(reparto.getPrecio() * 21 / 100);
+                iva = reparto.getPrecio() * 21 / 100;
+                row.createCell(8).setCellValue(reparto.getPrecio() + iva);
             } else {
                 for (RepartoDto.Item item : reparto.getItems()) {
                     Row row = sheet.createRow(rowIdx++);
 
                     if (!fleteroDataAdded) {
+                        String formattedDate = dateFormat.format(reparto.getFecha());
                         row.createCell(0).setCellValue(reparto.getViaje().getNumeroViaje());
-                        row.createCell(1).setCellValue(reparto.getFecha().toString());
+                        row.createCell(1).setCellValue(formattedDate);
                         row.createCell(2).setCellValue(reparto.getFleteros().getNombre());
                         row.createCell(3).setCellValue(reparto.getDescripcion());
                         fleteroDataAdded = true;
+                        lastRow = row;
                     }
-        iva =0.0;
+
+                    iva = 0.0;
                     row.createCell(4).setCellValue(item.getCliente().getNumeroCliente());
                     row.createCell(5).setCellValue(item.getKilos());
-                    row.createCell(6).setCellValue(reparto.getPrecio());
-                    row.createCell(7).setCellValue(reparto.getPrecio()*21/100);
-                    iva = reparto.getPrecio()*21/100;
-                    row.createCell(8).setCellValue(reparto.getPrecio()+iva);
 
                     totalKilos += item.getKilos();
                 }
 
+                if (lastRow != null) {
+                    lastRow.createCell(6).setCellValue(reparto.getPrecio());
+                    lastRow.createCell(7).setCellValue(reparto.getPrecio() * 21 / 100);
+                    iva = reparto.getPrecio() * 21 / 100;
+                    lastRow.createCell(8).setCellValue(reparto.getPrecio() + iva);
+                }
             }
 
             // Agregar fila para el total de kilos si hay clientes
@@ -190,13 +200,14 @@ public class RepartoPdfController {
                 .body(resource);
     }
 
+
     @PostMapping("/export/pdf")
     public ResponseEntity<ByteArrayResource> exportToPDF(@RequestBody RepartoDto repartoDto) throws IOException {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         PdfWriter writer = new PdfWriter(out);
         PdfDocument pdf = new PdfDocument(writer);
         Document document = new Document(pdf);
-
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
         // Definir el ancho de las columnas
         float[] columnWidths = {2, 2, 2, 2, 2, 2, 2, 2, 2}; // Añadí una columna para el total
         Table table = new Table(columnWidths);
@@ -220,8 +231,9 @@ public class RepartoPdfController {
 
             // Si no hay clientes, aún necesitamos agregar una fila para el fletero
             if (reparto.getItems().isEmpty()) {
+                String formattedDate = dateFormat.format(reparto.getFecha());
                 table.addCell(new Cell().add(String.valueOf(reparto.getViaje().getNumeroViaje())));
-                table.addCell(new Cell().add(reparto.getFecha().toString()));
+                table.addCell(new Cell().add(formattedDate));
                 table.addCell(new Cell().add(reparto.getFleteros().getNombre()));
                 table.addCell(new Cell().add(reparto.getDescripcion()));
                 table.addCell(new Cell().add(""));
@@ -232,8 +244,9 @@ public class RepartoPdfController {
             } else {
                 for (RepartoDto.Item item : reparto.getItems()) {
                     if (!fleteroDataAdded) {
+                        String formattedDate = dateFormat.format(reparto.getFecha());
                         table.addCell(new Cell().add(String.valueOf(reparto.getViaje().getNumeroViaje())));
-                        table.addCell(new Cell().add(reparto.getFecha().toString()));
+                        table.addCell(new Cell().add(formattedDate));
                         table.addCell(new Cell().add(reparto.getFleteros().getNombre()));
                         table.addCell(new Cell().add(reparto.getDescripcion()));
                         fleteroDataAdded = true;

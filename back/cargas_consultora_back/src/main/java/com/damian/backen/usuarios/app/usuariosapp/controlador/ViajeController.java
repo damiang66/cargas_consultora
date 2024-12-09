@@ -27,6 +27,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.*;
 
 import java.util.zip.ZipEntry;
@@ -174,9 +176,10 @@ public class ViajeController {
         PdfWriter writer = new PdfWriter(baos);
         PdfDocument pdf = new PdfDocument(writer);
         Document document = new Document(pdf);
-
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
         for (Viaje viaje : viajes) {
-            document.add(new Paragraph("Fecha: " + viaje.getFecha()));
+            String formattedDate = dateFormat.format(viaje.getFecha());
+            document.add(new Paragraph("Fecha: " + formattedDate));
             document.add(new Paragraph("Nro Viaje: " + viaje.getNumeroViaje()));
             document.add(new Paragraph("Cliente\tKilos"));
 
@@ -202,14 +205,15 @@ public class ViajeController {
     private byte[] generateExcel(List<Viaje> viajes) throws IOException {
         Workbook workbook = new XSSFWorkbook();
         Sheet sheet = workbook.createSheet("Viajes");
-
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
         int rowNum = 0;
 
         for (Viaje viaje : viajes) {
+            String formattedDate = dateFormat.format(viaje.getFecha());
             // Fecha y número de viaje
             Row fechaRow = sheet.createRow(rowNum++);
             fechaRow.createCell(0).setCellValue("Fecha");
-            fechaRow.createCell(1).setCellValue(viaje.getFecha().toString());
+            fechaRow.createCell(1).setCellValue(formattedDate);
 
             Row numeroViajeRow = sheet.createRow(rowNum++);
             numeroViajeRow.createCell(0).setCellValue("Nro Viaje");
