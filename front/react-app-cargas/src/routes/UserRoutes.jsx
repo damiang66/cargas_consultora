@@ -23,6 +23,7 @@ import { RepartoForm } from '../components/RepartoForm';
 import { SeguimientoPage } from '../pages/SeguimientoPage';
 import { FacturacionPage } from '../pages/FacturacionPage';
 import { FacturacionList } from '../components/FacturacionList';
+import { IvaPagar } from '../components/IvaPagar';
 
 export const UserRoutes = () => {
   const { login } = useAuth();
@@ -64,6 +65,7 @@ export const UserRoutes = () => {
                 <Route path="facturacion/:tipo"element={<FacturacionList/>} />
                 <Route path="facturacion/registrar" element={<FacturacionPage />} />
                 <Route path="facturacion/editar/:id" element={<FacturacionPage />} />
+                <Route path="ivaAPagar" element={<IvaPagar />} />
               </>
             )}
             <Route path="/" element={<Navigate to="/users" />} />

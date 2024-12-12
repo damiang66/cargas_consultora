@@ -33,6 +33,7 @@ public class FacturaController {
     // COMPRAS
     @GetMapping("/compras-todas/{tipo}")
     public ResponseEntity<?>findAll(@PathVariable String tipo){
+        System.out.println(tipo );
         List<Compra>selecionada = new ArrayList<>();
         List<Compra>compraList = compraService.findAll();
         compraList.forEach(l->{

@@ -5,6 +5,7 @@ import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { InputText } from 'primereact/inputtext';
 import { Calendar } from 'primereact/calendar';
+import { AutoComplete } from 'primereact/autocomplete';
 import Swal from 'sweetalert2';
 
 export const RepartoList = ({ repartos }) => {
@@ -17,7 +18,7 @@ export const RepartoList = ({ repartos }) => {
     const [filteredRepartos, setFilteredRepartos] = useState(repartos);
     const [totalImporte, setTotalImporte] = useState(0);
     const [sortOrder, setSortOrder] = useState(1); // 1 for ascending, -1 for descending
-
+    const [filteredViajes, setFilteredViajes] = useState([]);
     useEffect(() => {
         filterAndSortRepartos();
     }, [filters, repartos, sortOrder]);
@@ -49,6 +50,12 @@ export const RepartoList = ({ repartos }) => {
         setFilteredRepartos(tempRepartos);
         calculateTotalImporte(tempRepartos);
     };
+    const searchViaje = (event) => {
+        setFilteredViajes(repartos.filter(reparto => 
+            reparto.viaje.numeroViaje.toString().includes(event.query)
+        ));
+    };
+    
 
     const calculateTotalImporte = (filteredRepartos) => {
         const total = filteredRepartos.reduce((acc, curr) => acc + curr.precio, 0);
@@ -127,17 +134,40 @@ export const RepartoList = ({ repartos }) => {
         setSortOrder(sortOrder * -1);
     };
 
+    const agregarItemViaje = (item) => {
+        // Verificar si el cliente ya está en la lista
+        const clienteExistente = filteredRepartos.find(reparto => reparto.cliente.id === item.cliente.id);
+
+        if (clienteExistente) {
+            Swal.fire('Cliente duplicado', 'El cliente ya está en la lista', 'error');
+            return;
+        }
+
+        // Agregar el nuevo reparto
+        const nuevoReparto = {
+            ...item,
+            id: filteredRepartos.length + 1, // Puedes ajustar el ID según sea necesario
+            precio: parseFloat(item.precio) || 0 // Asegurarse de que el precio sea un número
+        };
+
+        const nuevosRepartos = [...filteredRepartos, nuevoReparto];
+        setFilteredRepartos(nuevosRepartos);
+        calculateTotalImporte(nuevosRepartos);
+    };
+
     return (
         <>
-            <div className="p-inputgroup" style={{ marginBottom: '1em' }}>
-                <span className="p-inputgroup-addon">Filtrar por número de viaje</span>
-                <InputText
-                    type="text"
-                    value={filters['viaje.numeroViaje'].value || ''}
-                    onChange={onViajeFilterChange}
-                    placeholder="Número de viaje"
-                />
-            </div>
+           <div className="p-inputgroup" style={{ marginBottom: '1em' }}>
+            <span className="p-inputgroup-addon">Filtrar por número de viaje</span>
+            <AutoComplete
+                value={filters['viaje.numeroViaje'].value}
+                suggestions={filteredViajes}
+                completeMethod={searchViaje}
+                field="viaje.numeroViaje"
+                onChange={onViajeFilterChange}
+                placeholder="Número de viaje"
+            />
+        </div>
             <div className="p-inputgroup" style={{ marginBottom: '1em' }}>
                 <span className="p-inputgroup-addon">Filtrar por fecha de inicio</span>
                 <Calendar
@@ -165,8 +195,7 @@ export const RepartoList = ({ repartos }) => {
                     placeholder="Fletero"
                 />
             </div>
-{console.log(filteredRepartos)
-}
+            {console.log(filteredRepartos)}
             <DataTable value={filteredRepartos} tableStyle={{ minWidth: '50rem' }} paginator rows={10}>
                 <Column field="id" header="ID"></Column>
                 <Column field="descripcion" header="Descripción"></Column>
@@ -185,13 +214,14 @@ export const RepartoList = ({ repartos }) => {
                 <Column body={editar} header="Editar"></Column>
                 <Column body={remove} header="Eliminar"></Column>
             </DataTable>
-
-            <div className="p-mt-2">
-                <strong>Total Importe:</strong> {totalImporte}
+            <div className="p-inputgroup" style={{ marginTop: '2em' }}>
+                <span className="p-inputgroup-addon">Total Importe</span>
+                <InputText type="text" value={totalImporte.toFixed(2)} readOnly />
             </div>
-
-            <button className="btn btn-primary" onClick={() => enviarAlBackend('pdf')}>Exportar a PDF</button>
-            <button className="btn btn-primary" onClick={() => enviarAlBackend('excel')}>Exportar a Excel</button>
+            <div className="btn-group" style={{ marginTop: '2em' }}>
+                <button className="btn btn-primary" onClick={() => enviarAlBackend('pdf')}>Exportar PDF</button>
+                <button className="btn btn-primary" onClick={() => enviarAlBackend('excel')}>Exportar Excel</button>
+            </div>
         </>
     );
 };

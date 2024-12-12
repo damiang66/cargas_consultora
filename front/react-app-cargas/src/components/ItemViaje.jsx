@@ -14,15 +14,17 @@ export const ItemViaje = ({ agregarItemViaje }) => {
   });
 
   const [selectedClientes, setSelectedClientes] = useState([]);
-  const {clientes,getClientes}= useClientes()
-  const {handlerCloseForm}=useViajes()
+  const { clientes, getClientes } = useClientes();
+  const { handlerCloseForm } = useViajes();
 
   const handleClienteChange = (e) => {
     setSelectedClientes(e.value);
   };
-useEffect(()=>{
-getClientes()
-},[])
+
+  useEffect(() => {
+    getClientes();
+  }, []);
+
   const onInputChange = (e) => {
     const { name, value } = e.target;
     setItem({
@@ -30,6 +32,10 @@ getClientes()
       [name]: value,
     });
   };
+  const cerrar=()=>{
+    setSelectedClientes([]);
+    handlerCloseForm();
+  }
 
   const agregar = () => {
     const newItem = {
@@ -46,7 +52,7 @@ getClientes()
       cliente: null
     });
     setSelectedClientes([]);
-    handlerCloseForm()
+    handlerCloseForm();
   };
 
   return (
@@ -57,7 +63,7 @@ getClientes()
             <div className="modal-content">
               <div className="modal-header">
                 <h5 className="modal-title">
-                  Modal Items
+                  Agregar Cliente
                 </h5>
               </div>
               <div className="modal-body">
@@ -70,6 +76,8 @@ getClientes()
                   placeholder="Seleccione Cliente"
                   maxSelectedLabels={5}
                   className="w-full md:w-20rem m-2"
+                  filter
+                  filterBy="numeroCliente"
                 />
                 <FloatLabel className='m-2'>
                   <InputText id="bultos" name='bultos' value={item.bultos} onChange={onInputChange} />
@@ -80,6 +88,7 @@ getClientes()
                   <label htmlFor="kilos">Kilos</label>
                 </FloatLabel>
                 <Button className='btn btn-primary m-2' type='button' onClick={agregar}> Agregar +</Button>
+                <Button className='btn btn-danger m-2' type='button' onClick={cerrar}> Cerrar </Button>
               </div>
             </div>
           </div>

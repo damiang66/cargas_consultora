@@ -189,10 +189,21 @@ export const RepartoForm = () => {
         <div>
             <h2>{id ? 'Editar Reparto' : 'Crear Reparto'}</h2>
             <form onSubmit={handleSubmit}>
-                <div className="p-field">
-                    <label htmlFor="viajeId">Número de Viaje</label>
-                    <Dropdown id="viajeId" value={viajeId} options={viajesDisponibles} onChange={handleViajeChange} optionLabel="numeroViaje" placeholder="Seleccione un viaje" />
-                </div>
+            <div className="p-field">
+    <label htmlFor="viajeId">Número de Viaje</label>
+    <Dropdown 
+        id="viajeId" 
+        value={viajeId} 
+        options={viajesDisponibles} 
+        onChange={handleViajeChange} 
+        optionLabel="numeroViaje" 
+        placeholder="Seleccione un viaje" 
+        filter 
+        filterBy="numeroViaje" // Configura el filtro para que busque por 'numeroViaje'
+        filterPlaceholder="Buscar por número de viaje" // Mensaje de búsqueda
+    />
+</div>
+
                 <div className="p-field">
                     <label htmlFor="descripcion">Descripción</label>
                     <InputText id="descripcion" value={descripcion} onChange={(e) => setDescripcion(e.target.value)} />
